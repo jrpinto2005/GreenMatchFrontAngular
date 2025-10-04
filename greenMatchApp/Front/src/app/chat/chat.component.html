@@ -1,0 +1,24 @@
+<app-barra-superior></app-barra-superior>
+
+<main class="chat-content d-flex flex-column justify-content-center align-items-center flex-fill">
+  <div class="placeholder-content">
+
+    <div class="container">
+      <div class="chat-container">
+        <div class="messages">
+          <div *ngFor="let msg of messages" [class.self]="msg.from === 'me'">
+            <span>{{ msg.text }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <input [(ngModel)]="newMessage" placeholder="Type a message..." (keyup.enter)="sendMessage()" />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+
+  </div>
+</main>
+
+<app-barra-inferior></app-barra-inferior>

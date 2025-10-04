@@ -1,3 +1,35 @@
 @import 'bootstrap/scss/bootstrap';
 
+/*colores*/
+$verde-oscuro1: #151e08;
+$verde-oscuro2: #52510b;
+$verde-claro1: #99920b;
+$verde-claro2: #cfcf8a;
+$vinotino: #500029;
+$crema: #ffffee;
+
+.verde-oscuro1 {
+    color: #151e08;
+}
+
+.verde-oscuro2 {
+    color: #52510b;
+}
+
+.verde-claro1 {
+    color: #99920b;
+}
+
+.verde-claro2 {
+    color: #cfcf8a;
+}
+
+.vinotinto {
+    color: #500029;
+}
+
+.crema {
+    color: #ffffee;
+}
+
 /* You can add global styles to this file, and also import other style files */
