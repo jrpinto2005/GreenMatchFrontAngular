@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  --bottom-bar-gap: clamp(56px, 7vh, 88px);
   --chat-bg: #0f1115;
   --chat-text: #e5e7eb;
   --chat-secondary-text: #94a3b8;
@@ -41,7 +42,7 @@
   display: flex;
   justify-content: center;
   padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 6vw, 3rem);
-  padding-bottom: calc(clamp(90px, 10vh, 110px) + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--bottom-bar-gap) + env(safe-area-inset-bottom));
 }
 
 .chat-card {
@@ -135,7 +136,10 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  padding: clamp(0.9rem, 3vw, 1.25rem) clamp(1.1rem, 4vw, 2.5rem) calc(clamp(0.9rem, 3vw, 1.25rem) + env(safe-area-inset-bottom));
+  padding-inline: clamp(1.1rem, 4vw, 2.5rem);
+  padding-block: clamp(0.9rem, 3vw, 1.25rem);
+  padding-bottom: calc(clamp(0.9rem, 3vw, 1.25rem) + env(safe-area-inset-bottom));
+  margin-bottom: var(--bottom-bar-gap);
   background: var(--chat-composer-bg);
   border-top: 1px solid var(--chat-composer-border);
 }
@@ -225,9 +229,13 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (hover: none) and (pointer: coarse) {
+  :host {
+    --bottom-bar-gap: clamp(88px, 14vh, 128px);
+  }
+
   .chat-page {
-    padding: clamp(0.75rem, 4vw, 1.25rem) clamp(0.75rem, 5vw, 1.25rem) calc(clamp(92px, 12vh, 118px) + env(safe-area-inset-bottom));
+    padding: clamp(0.75rem, 4vw, 1.25rem) clamp(0.75rem, 5vw, 1.25rem);
   }
 
   .chat-card {
