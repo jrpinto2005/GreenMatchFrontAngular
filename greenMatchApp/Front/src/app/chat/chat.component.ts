@@ -21,6 +21,10 @@ export class ChatComponent {
   messages: Message[] = [];
   newMessage: string = '';
 
+  handleSubmit() {
+    this.sendMessage();
+  }
+
   sendMessage() {
     if (this.newMessage.trim() === '') return;
 

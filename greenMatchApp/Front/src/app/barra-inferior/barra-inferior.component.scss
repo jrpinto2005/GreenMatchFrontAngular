@@ -1,70 +1,122 @@
 .barra-inferior {
   position: fixed;
-  bottom: 0;
+  bottom: clamp(0.6rem, 2vh, 1.1rem);
   left: 0;
   right: 0;
-  width: 100%;
-  background-color: #1a1a1a;
-  border-top: 1px solid #2a2a2a;
   z-index: 1000;
-}
-
-nav {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
+  justify-content: center;
+  padding: 0 clamp(0.6rem, 4vw, 1.25rem);
+  padding-bottom: max(env(safe-area-inset-bottom), 0.25rem);
 }
 
-.nav-item {
+.barra-inferior__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(0.6rem, 3vw, 1.5rem);
+  width: min(460px, 100%);
+  padding: clamp(0.45rem, 1.6vh, 0.7rem) clamp(0.85rem, 3.5vw, 1.4rem);
+  border-radius: 999px;
+  background: rgba(18, 23, 21, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.32);
+  backdrop-filter: saturate(180%) blur(18px);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+@supports not ((-webkit-backdrop-filter: blur(0)) or (backdrop-filter: blur(0))) {
+  .barra-inferior__nav {
+    background: rgba(18, 23, 21, 0.96);
+  }
+}
+
+.barra-inferior__item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-width: 0;
+  gap: 0.35rem;
   flex: 1;
   text-decoration: none;
-  color: #adb5bd;
-  transition: color 0.2s ease;
-  
-  &:hover {
-    color: #fff;
-    text-decoration: none;
+  color: rgba(237, 241, 244, 0.75);
+  font-weight: 500;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: #ffffff;
+    transform: translateY(-1px);
   }
-  
-  &.active {
-    color: #4caf50;
+
+  &:focus-visible {
+    outline: 2px solid rgba(125, 216, 125, 0.55);
+    outline-offset: 4px;
+  }
+
+  &[aria-current='page'] {
+    color: #7dd87d;
   }
 }
 
-.icon-placeholder {
-  width: 120px;
-  height: 100px;
-  margin-bottom: 6px;
+.barra-inferior__item::after {
+  content: '';
+  position: absolute;
+  bottom: -0.25rem;
+  left: 50%;
+  width: 18px;
+  height: 3px;
+  border-radius: 999px;
+  background: transparent;
+  transform: translateX(-50%);
+  transition: background 0.2s ease;
+}
+
+.barra-inferior__item:hover::after,
+.barra-inferior__item[aria-current='page']::after {
+  background: #7dd87d;
+}
+
+.barra-inferior__icon {
+  width: clamp(22px, 5.5vw, 28px);
+  height: clamp(22px, 5.5vw, 28px);
   object-fit: contain;
+  transition: transform 0.2s ease;
 }
 
-.nav-label {
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.2;
-  margin: 0;
+.barra-inferior__item:hover .barra-inferior__icon {
+  transform: scale(1.05);
+}
+
+.barra-inferior__label {
+  font-size: clamp(0.68rem, 1.7vw, 0.84rem);
+  letter-spacing: 0.015em;
+  white-space: nowrap;
   color: inherit;
 }
-//makes the component smaller
-.barra-inferior {
-  padding: 0px 0;
+
+@media (max-width: 600px) {
+  .barra-inferior {
+    bottom: clamp(0.45rem, 2.8vh, 1rem);
+    padding-inline: clamp(0.45rem, 5vw, 0.9rem);
+  }
+
+  .barra-inferior__nav {
+    width: min(92%, 380px);
+    padding-inline: clamp(0.75rem, 5vw, 1.2rem);
+    gap: clamp(0.45rem, 4vw, 1rem);
+  }
+
+  .barra-inferior__item {
+    gap: 0.25rem;
+  }
 }
-//reduces margins between icons
-.nav-item {
-  padding: 0px 0;
-}
-//reduces margins between text and image
-.icon-placeholder {
-  margin: 0 auto 4px;
-}
-.nav-label {
-    font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1.2;
-    margin: 0;
-    color: inherit;
+
+@media (min-width: 900px) {
+  .barra-inferior__nav {
+    width: min(560px, 88%);
+    padding-inline: clamp(1.05rem, 3vw, 2.1rem);
+  }
 }

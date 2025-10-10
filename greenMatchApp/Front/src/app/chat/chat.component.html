@@ -1,24 +1,47 @@
 <app-barra-superior></app-barra-superior>
 
-<main class="chat-content d-flex flex-column justify-content-center align-items-center flex-fill">
-  <div class="placeholder-content">
-
-    <div class="container">
-      <div class="chat-container">
-        <div class="messages">
-          <div *ngFor="let msg of messages" [class.self]="msg.from === 'me'">
-            <span>{{ msg.text }}</span>
-          </div>
+<main class="chat-page">
+  <section class="chat-card" aria-label="Conversacion">
+    <div class="chat-card__messages" role="log" aria-live="polite">
+      <ng-container *ngIf="messages.length > 0; else emptyState">
+        <div
+          *ngFor="let msg of messages"
+          class="chat-card__message"
+          [class.chat-card__message--self]="msg.from === 'me'"
+          role="listitem">
+          <span>{{ msg.text }}</span>
         </div>
+      </ng-container>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="chat-card__empty" role="presentation">
+        <img src="assets/chat-verde.png" alt="Ilustracion de chat" loading="lazy" />
+        <h2>Bienvenido al chat</h2>
+        <p>Envia tu primer mensaje para iniciar la conversacion.</p>
       </div>
-    </div>
+    </ng-template>
 
-    <div class="input-area">
-      <input [(ngModel)]="newMessage" placeholder="Type a message..." (keyup.enter)="sendMessage()" />
-      <button (click)="sendMessage()">Send</button>
-    </div>
-
-  </div>
+    <form class="chat-card__composer" (ngSubmit)="handleSubmit()" novalidate>
+      <label class="visually-hidden" for="chat-message">Escribe tu mensaje</label>
+      <div class="chat-card__input">
+        <input
+          id="chat-message"
+          name="message"
+          type="text"
+          [(ngModel)]="newMessage"
+          placeholder="Escribe un mensaje..."
+          autocomplete="off"
+          aria-label="Mensaje a enviar" />
+      </div>
+      <button
+        class="chat-card__send"
+        type="submit"
+        [disabled]="!newMessage.trim()">
+        Enviar
+      </button>
+    </form>
+  </section>
 </main>
 
 <app-barra-inferior></app-barra-inferior>
