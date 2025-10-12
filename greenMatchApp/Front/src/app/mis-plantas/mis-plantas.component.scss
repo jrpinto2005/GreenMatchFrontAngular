@@ -6,3 +6,8 @@
     padding-bottom: calc(var(--bottom-bar-gap) + env(safe-area-inset-bottom));
     background-color: #0f1510;
 }
+
+.bottom-gap {
+    height: 80px;
+    background-color: #0f1510;
+}
