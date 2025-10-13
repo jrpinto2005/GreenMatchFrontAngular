@@ -1,19 +1,18 @@
 <app-barra-superior></app-barra-superior>
 <main class="mis-plantas-page">
   <div class="container mt-3">
-    <h2>Mis plantas</h2>
-    <div class="plant-list" *ngIf="plantas && plantas.length">
-      <div class="mb-4" *ngFor="let planta of plantas">
-        <div class="card p-3">
-          <p>{{ planta.name }}</p>
-        </div>
+    <h1>Mis plantas</h1>
+
+    <div *ngIf="!plantas || plantas.length === 0" class="text-muted">No tienes plantas guardadas.</div>
+
+    <div *ngIf="plantas && plantas.length">
+      <div class="plant-item" *ngFor="let planta of plantas">
+        <hr class="plant-item">
+          <h2>{{ planta.name }}</h2>
+          <p>Ultimo riego: {{ planta.watered }} dias</p>
       </div>
     </div>
-
   </div>
-
-  <div *ngIf="!plantas || plantas.length === 0" class="text-muted">No tienes plantas guardadas.</div>
-
 </main>
 <div class="bottom-gap"></div>
 <app-barra-inferior></app-barra-inferior>

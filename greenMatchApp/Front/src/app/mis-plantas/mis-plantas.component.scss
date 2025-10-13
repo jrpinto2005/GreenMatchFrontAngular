@@ -4,10 +4,25 @@
     justify-content: center;
     padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 6vw, 3rem);
     padding-bottom: calc(var(--bottom-bar-gap) + env(safe-area-inset-bottom));
-    background-color: #0f1510;
+    background-color: #ffffee;
 }
 
 .bottom-gap {
     height: 80px;
-    background-color: #0f1510;
+    background-color: #ffffee;
 }
+
+.divisor {
+    background-color: #cfcf8a;
+}
+
+.plant-item {
+    margin-bottom: 1.5rem 0;
+}
+
+.plant-item hr {
+    border: none;
+    border-top: 1px solid #cfcf8a;
+    margin-bottom: 0.75rem;
+}
+

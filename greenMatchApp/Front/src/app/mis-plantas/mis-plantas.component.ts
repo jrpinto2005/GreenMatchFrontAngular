@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 interface Plant {
   id?: number;
   name?: string;
+  watered?: number;
   // add fields that match assets/data/plants.json
 }
 
