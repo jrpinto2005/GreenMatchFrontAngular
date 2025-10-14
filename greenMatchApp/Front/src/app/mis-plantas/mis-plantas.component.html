@@ -1,7 +1,23 @@
 <app-barra-superior></app-barra-superior>
+<div class="top-gap"></div>
 <main class="mis-plantas-page">
   <div class="container mt-3">
-    <h1>Mis plantas</h1>
+    <div class="header-row">
+      <h1>Mis plantas</h1>
+      <div class="button-container">
+        <button 
+          class="add-btn" 
+          [class.rotated]="popupOpen"
+          (click)="addPlant()">+</button>
+
+        <!-- pop up -->
+        <div class="popup" *ngIf="popupOpen">
+          <button class="popup-item" routerLink="/add">Agregar una planta</button>
+          <hr>
+          <button class="popup-item" routerLink="/recommend">Recomiendame una planta</button>
+        </div>
+      </div>
+    </div>
 
     <div *ngIf="!plantas || plantas.length === 0" class="text-muted">No tienes plantas guardadas.</div>
 

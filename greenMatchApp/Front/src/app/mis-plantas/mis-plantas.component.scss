@@ -12,12 +12,17 @@
     background-color: #ffffee;
 }
 
+.top-gap {
+    height: 50px;
+}
+
 .divisor {
     background-color: #cfcf8a;
 }
 
 .plant-item {
     margin-bottom: 1.5rem 0;
+    z-index: 1;
 }
 
 .plant-item hr {
@@ -26,3 +31,62 @@
     margin-bottom: 0.75rem;
 }
 
+.add-btn {
+    font-family: "hoss-round-slab", sans-serif;
+    font-weight: 400;
+    font-size: 50px;
+    color: #99920b;
+    border: transparent;
+    background: transparent;
+    cursor: pointer;
+    height: 80px;
+    transition: transform 0.2s ease;
+}
+
+.add-btn:hover {
+    color: #52510b;
+}
+
+.add-btn.rotated {
+    transform: rotate(45deg);
+}
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #d8d8a5; /* match your design */
+    border-radius: 8px;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.popup-item {
+    background: none;
+    border: none;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.popup-item:hover {
+    background-color: #52510b;
+}
+
+.button-container {
+    position: relative;
+    display: inline-block;
+}
