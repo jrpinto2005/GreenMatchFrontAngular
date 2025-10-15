@@ -56,7 +56,8 @@
     outline-offset: 4px;
   }
 
-  &[aria-current='page'] {
+  &[aria-current='page'],
+  &.barra-inferior__item--active {
     color: #7dd87d;
   }
 }
@@ -75,7 +76,8 @@
 }
 
 .barra-inferior__item:hover::after,
-.barra-inferior__item[aria-current='page']::after {
+.barra-inferior__item[aria-current='page']::after,
+.barra-inferior__item.barra-inferior__item--active::after {
   background: #7dd87d;
 }
 

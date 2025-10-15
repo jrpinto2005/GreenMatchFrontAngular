@@ -1,0 +1,248 @@
+<app-barra-superior></app-barra-superior>
+
+<ng-container *ngIf="viewModel$ | async as vm; else loading">
+  <main class="mi-horario-page">
+    <section class="mi-horario-card" aria-label="Agenda de cuidados">
+      <header class="mi-horario-header">
+        <div>
+          <h1 class="mi-horario-title">Mi horario</h1>
+          <p class="mi-horario-subtitle">
+            {{ vm.pendingCount }} {{ vm.pendingCount === 1 ? 'tarea pendiente' : 'tareas pendientes' }}
+            <ng-container *ngIf="vm.nextEvent">
+              - siguiente: {{ vm.nextEvent.scheduledAt | date : 'shortTime' }}
+            </ng-container>
+          </p>
+        </div>
+        <button type="button" class="mi-horario-action" (click)="startCreateReminder()">
+          + Nuevo recordatorio
+        </button>
+      </header>
+
+      <section *ngIf="vm.groups.length > 0; else emptyState" class="mi-horario-body">
+        <article *ngFor="let group of vm.groups" class="mi-horario-group">
+          <h2
+            class="mi-horario-group__title"
+            [class.mi-horario-group__title--today]="group.isToday">
+            {{ group.label }}
+          </h2>
+
+          <ul class="mi-horario-list">
+            <li
+              *ngFor="let event of group.items"
+              class="mi-horario-list__item"
+              [class.mi-horario-list__item--past]="event.isPast"
+              [class.mi-horario-list__item--completed]="event.completed"
+              [class.mi-horario-list__item--overdue]="event.isOverdue"
+              (click)="openEventDetails(event.id)">
+              <div class="mi-horario-list__time">
+                {{ event.scheduledAt | date : 'shortTime' }}
+              </div>
+              <div class="mi-horario-list__content">
+                <div class="mi-horario-list__row">
+                  <span class="mi-horario-list__title">{{ event.title }}</span>
+                  <span
+                    class="mi-horario-list__status"
+                    [class.mi-horario-list__status--completed]="event.completed"
+                    [class.mi-horario-list__status--overdue]="event.isOverdue">
+                    {{ event.statusLabel }}
+                  </span>
+                </div>
+                <span class="mi-horario-list__meta">
+                  {{ event.plantName }} - {{ event.typeLabel }}
+                </span>
+                <span *ngIf="event.notes" class="mi-horario-list__notes">
+                  {{ event.notes }}
+                </span>
+              </div>
+              <button
+                type="button"
+                class="mi-horario-list__action"
+                (click)="toggleCompletion(event); $event.stopPropagation()"
+                [attr.aria-label]="event.completed ? 'Marcar pendiente' : 'Marcar completado'">
+                {{ event.completed ? 'Reabrir' : 'Listo' }}
+              </button>
+            </li>
+          </ul>
+        </article>
+      </section>
+    </section>
+
+    <div
+      class="mi-horario-backdrop"
+      *ngIf="isFormOpen() || selectedEventId() !== null"
+      (click)="closePanels()"
+      aria-hidden="true"></div>
+
+    <aside
+      *ngIf="(selectedEvent$ | async) as selected"
+      class="mi-horario-panel mi-horario-panel--detail"
+      aria-label="Detalle del recordatorio">
+      <header class="mi-horario-panel__header">
+        <div>
+          <h2>{{ selected.title }}</h2>
+          <p class="mi-horario-panel__subtitle">
+            {{ selected.scheduledAt | date : 'fullDate' }} - {{ selected.scheduledAt | date : 'shortTime' }}
+          </p>
+        </div>
+        <button type="button" class="mi-horario-panel__close" (click)="closePanels()" aria-label="Cerrar panel">
+          Cerrar
+        </button>
+      </header>
+
+      <dl class="mi-horario-panel__details">
+        <div class="mi-horario-panel__detail">
+          <dt>Planta</dt>
+          <dd>{{ selected.plantName }}</dd>
+        </div>
+        <div class="mi-horario-panel__detail">
+          <dt>Tipo</dt>
+          <dd>{{ selected.typeLabel }}</dd>
+        </div>
+        <div class="mi-horario-panel__detail">
+          <dt>Estado</dt>
+          <dd>{{ selected.statusLabel }}</dd>
+        </div>
+        <div class="mi-horario-panel__detail" *ngIf="selected.notes">
+          <dt>Notas</dt>
+          <dd>{{ selected.notes }}</dd>
+        </div>
+      </dl>
+
+      <div class="mi-horario-panel__actions">
+        <button type="button" class="mi-horario-panel__button" (click)="toggleCompletion(selected)">
+          {{ selected.completed ? 'Marcar pendiente' : 'Marcar completado' }}
+        </button>
+        <button type="button" class="mi-horario-panel__button" (click)="startEditReminder(selected)">
+          Editar
+        </button>
+        <button type="button" class="mi-horario-panel__button mi-horario-panel__button--danger" (click)="deleteEvent(selected)">
+          Eliminar
+        </button>
+      </div>
+    </aside>
+
+    <aside
+      *ngIf="isFormOpen()"
+      class="mi-horario-panel mi-horario-panel--form"
+      aria-label="Formulario de recordatorio">
+      <header class="mi-horario-panel__header">
+        <div>
+          <h2>{{ formTitle() }}</h2>
+          <p class="mi-horario-panel__subtitle">
+            Completa los campos para programar el cuidado.
+          </p>
+        </div>
+        <button type="button" class="mi-horario-panel__close" (click)="closePanels()" aria-label="Cerrar panel">
+          Cerrar
+        </button>
+      </header>
+
+      <form class="mi-horario-form" [formGroup]="reminderForm" (ngSubmit)="submitReminder()">
+        <div class="mi-horario-form__field">
+          <label for="reminder-title">Titulo</label>
+          <input
+            id="reminder-title"
+            type="text"
+            formControlName="title"
+            placeholder="Ej. Riego profundo de monstera" />
+          <span
+            class="mi-horario-form__error"
+            *ngIf="reminderForm.controls.title.invalid && reminderForm.controls.title.touched">
+            Ingresa un titulo de hasta 60 caracteres.
+          </span>
+        </div>
+
+        <div class="mi-horario-form__field">
+          <label for="reminder-plant">Planta</label>
+          <select id="reminder-plant" formControlName="plantId">
+            <option value="" disabled>Selecciona una planta</option>
+            <option *ngFor="let plant of (plants$ | async) ?? []" [value]="plant.id">
+              {{ plant.name }}
+            </option>
+          </select>
+          <span
+            class="mi-horario-form__error"
+            *ngIf="reminderForm.controls.plantId.invalid && reminderForm.controls.plantId.touched">
+            Selecciona una planta.
+          </span>
+        </div>
+
+        <div class="mi-horario-form__field">
+          <label for="reminder-type">Tipo de cuidado</label>
+          <select id="reminder-type" formControlName="type">
+            <option *ngFor="let option of typeOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="mi-horario-form__row">
+          <div class="mi-horario-form__field">
+            <label for="reminder-date">Fecha</label>
+            <input id="reminder-date" type="date" formControlName="date" />
+            <span
+              class="mi-horario-form__error"
+              *ngIf="reminderForm.controls.date.invalid && reminderForm.controls.date.touched">
+              Selecciona una fecha valida.
+            </span>
+          </div>
+
+          <div class="mi-horario-form__field">
+            <label for="reminder-time">Hora</label>
+            <input id="reminder-time" type="time" formControlName="time" />
+            <span
+              class="mi-horario-form__error"
+              *ngIf="reminderForm.controls.time.invalid && reminderForm.controls.time.touched">
+              Selecciona una hora valida.
+            </span>
+          </div>
+        </div>
+
+        <div class="mi-horario-form__field">
+          <label for="reminder-notes">Notas</label>
+          <textarea
+            id="reminder-notes"
+            formControlName="notes"
+            rows="3"
+            placeholder="Indicaciones especiales, cantidades, etc."></textarea>
+        </div>
+
+        <div class="mi-horario-form__actions">
+          <button type="button" class="mi-horario-form__button mi-horario-form__button--ghost" (click)="closePanels()">
+            Cancelar
+          </button>
+          <button type="submit" class="mi-horario-form__button">
+            {{ isEditing() ? 'Guardar cambios' : 'Crear recordatorio' }}
+          </button>
+        </div>
+      </form>
+    </aside>
+  </main>
+</ng-container>
+
+<app-barra-inferior></app-barra-inferior>
+
+<ng-template #loading>
+  <main class="mi-horario-page mi-horario-page--loading">
+    <section class="mi-horario-card mi-horario-card--loading">
+      <div class="mi-horario-loading">Cargando horario...</div>
+    </section>
+  </main>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="mi-horario-empty">
+    <img
+      src="assets/calendar-verde.png"
+      alt="Ilustracion de calendario"
+      loading="lazy"
+      class="mi-horario-empty__image" />
+    <h2 class="mi-horario-empty__title">Sin recordatorios programados</h2>
+    <p class="mi-horario-empty__text">
+      Crea un recordatorio para planear el cuidado de tus plantas.
+    </p>
+    <button type="button" class="mi-horario-empty__action" (click)="startCreateReminder()">
+      Crear recordatorio
+    </button>
+  </div>
+</ng-template>

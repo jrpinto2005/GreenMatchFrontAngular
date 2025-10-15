@@ -1,0 +1,46 @@
+{
+  "events": [
+    {
+      "id": 101,
+      "plantId": 1,
+      "title": "Riego ligero",
+      "type": "watering",
+      "scheduledAt": "2025-10-16T09:00:00Z",
+      "notes": "Usar agua a temperatura ambiente.",
+      "completed": false
+    },
+    {
+      "id": 102,
+      "plantId": 5,
+      "title": "Pulverizar hojas",
+      "type": "mist",
+      "scheduledAt": "2025-10-16T18:00:00Z",
+      "completed": false
+    },
+    {
+      "id": 103,
+      "plantId": 12,
+      "title": "Aplicar fertilizante",
+      "type": "fertilize",
+      "scheduledAt": "2025-10-17T12:00:00Z",
+      "notes": "Dilucion 1:4, no exceder.",
+      "completed": false
+    },
+    {
+      "id": 104,
+      "plantId": 3,
+      "title": "Podar hojas secas",
+      "type": "prune",
+      "scheduledAt": "2025-10-18T15:30:00Z",
+      "completed": false
+    },
+    {
+      "id": 105,
+      "plantId": 9,
+      "title": "Revision de plagas",
+      "type": "checkup",
+      "scheduledAt": "2025-10-19T10:30:00Z",
+      "completed": true
+    }
+  ]
+}
