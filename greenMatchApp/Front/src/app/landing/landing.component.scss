@@ -1,0 +1,213 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(153, 146, 11, 0.18), transparent 55%),
+    radial-gradient(circle at 20% 20%, rgba(80, 0, 41, 0.18), transparent 45%),
+    #0f1115;
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.landing {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1rem, 6vw, 4rem) clamp(2rem, 7vw, 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.landing__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.landing__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.landing__nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.landing__content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: stretch;
+}
+
+.landing__hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0 0 1rem;
+}
+
+.landing__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.landing__subtitle {
+  color: rgba(248, 250, 252, 0.78);
+  max-width: 520px;
+  margin: 0;
+}
+
+.landing__kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.75rem;
+  color: #cfcf8a;
+  margin: 0;
+}
+
+.landing__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.landing__cta,
+.landing__ghost {
+  border-radius: 999px;
+  padding: 0.85rem 1.85rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.landing__cta {
+  background: #36b364;
+  color: #06140b;
+  box-shadow: 0 18px 30px rgba(54, 179, 100, 0.32);
+}
+
+.landing__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 34px rgba(54, 179, 100, 0.45);
+}
+
+.landing__cta--primary {
+  background: linear-gradient(135deg, #4caf50, #99c93c);
+}
+
+.landing__cta--secondary {
+  display: inline-flex;
+  justify-content: center;
+  margin-top: 1rem;
+  width: fit-content;
+}
+
+.landing__ghost {
+  border: 1px solid rgba(248, 250, 252, 0.3);
+  color: rgba(248, 250, 252, 0.9);
+}
+
+.landing__ghost:hover {
+  border-color: rgba(248, 250, 252, 0.7);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.landing__hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(248, 250, 252, 0.72);
+}
+
+.landing__card {
+  background: rgba(8, 10, 14, 0.65);
+  border: 1px solid rgba(153, 146, 11, 0.2);
+  border-radius: 24px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.landing__card h2 {
+  margin: 0;
+}
+
+.landing__highlights {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.landing__highlights li {
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landing__highlights li:last-child {
+  border-bottom: 0;
+}
+
+.landing__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.08);
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.landing__highlight-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.landing__highlight-text {
+  margin: 0.15rem 0 0;
+  color: rgba(248, 250, 252, 0.78);
+  font-size: 0.95rem;
+}
+
+.landing__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.5rem;
+  font-size: 0.9rem;
+  color: rgba(248, 250, 252, 0.7);
+}
+
+.landing__footer a {
+  color: #36b364;
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .landing__nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .landing__hero h1 {
+    font-size: 2.25rem;
+  }
+}
