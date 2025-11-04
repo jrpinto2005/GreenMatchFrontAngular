@@ -19,9 +19,7 @@ interface Plant {
     BarraInferiorComponent,
     BarraSuperiorComponent,
     CommonModule,
-    RouterLink
-    // remove HttpClientModule here — HttpClient is provided at app root via provideHttpClient()
-  ],
+    RouterLink ],
   templateUrl: './mis-plantas.component.html',
   styleUrls: ['./mis-plantas.component.scss']
 })

@@ -1,0 +1,40 @@
+.add-page {
+    background-color: #ffffee;
+    min-height: 100vh;
+}
+
+.header {
+    color: 151e08;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    height: 10vh;
+    position: relative
+}
+
+.center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.add-form {
+  width: 100%;
+  max-width: 400px;
+}
+
+.back-btn {
+
+    font-weight: 500;
+    font-size: 35px;
+    color: #99920b;
+    border: transparent;
+    background: transparent;
+    cursor: pointer;
+    height: 80px;
+}
+
+.back-btn:hover {
+    color: #52510b;
+}
