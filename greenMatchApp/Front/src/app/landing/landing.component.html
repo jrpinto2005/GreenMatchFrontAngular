@@ -28,7 +28,7 @@
     </div>
 
     <div class="landing__card">
-      <h2>Por qué GreenMatch?</h2>
+      <h2> Explora lo que GreenMatch tiene para ti: </h2>
       <ul class="landing__highlights">
         <li *ngFor="let item of highlights">
           <span class="landing__icon" aria-hidden="true">{{ item.icon }}</span>
@@ -38,7 +38,7 @@
           </div>
         </li>
       </ul>
-      <a routerLink="/login" class="landing__cta landing__cta--secondary">Comenzar gratis</a>
+      <a routerLink="/login" class="landing__cta landing__cta--secondary">Comenzar</a>
     </div>
   </main>
 
@@ -203,7 +203,7 @@
       <div class="landing__guarantee-features">
         <div class="landing__guarantee-feature">
           <span>✓</span>
-          <span>Siempre gratis</span>
+          <span>Sin cargos adicionales</span>
         </div>
         <div class="landing__guarantee-feature">
           <span>✓</span>
@@ -236,10 +236,10 @@
       <p>Comienza tu viaje verde hoy, completamente gratis</p>
       <div class="landing__final-cta-actions">
         <a routerLink="/login" [queryParams]="{ mode: 'register' }" class="landing__cta landing__cta--large">
-          Crear cuenta gratis
+          Crear cuenta 
         </a>
         <p class="landing__final-cta-note">
-          ✓ 100% Gratis para siempre<br>
+          ✓ 100% Gratuito<br>
           ✓ Sin tarjetas de crédito<br>
           ✓ Soporte en español 24/7
         </p>

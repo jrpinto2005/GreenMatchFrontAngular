@@ -300,6 +300,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: clamp(1.25rem, 3vw, 2rem);
+  justify-items: center;
 }
 
 .landing__persona-card {

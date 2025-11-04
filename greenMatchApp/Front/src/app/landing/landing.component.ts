@@ -57,8 +57,8 @@ export class LandingComponent {
 
   readonly highlights: LandingHighlight[] = [
     {
-      title: 'Cuida tus plantas',
-      description: 'Recordatorios inteligentes para riegos, fertilizaciones y podas.',
+      title: 'Cuida tus plantas con IA',
+      description: 'Sube una foto o una descripción, y se te creará un plan personalizado para tu planta.',
       icon: '01'
     },
     {
@@ -68,7 +68,7 @@ export class LandingComponent {
     },
     {
       title: 'Agenda visual',
-      description: 'Un calendario claro para organizar cada cuidado.',
+      description: 'Un calendario claro con recordatorios inteligentes para riegos, fertilizaciones y podas.',
       icon: '03'
     }
   ];
@@ -93,6 +93,16 @@ export class LandingComponent {
       emoji: '👩',
       title: 'La mamá',
       description: 'Quiere agregarle un poco más de vida a la casa'
+    },
+    {
+      emoji: '😵‍💫',
+      title: 'El olvidadizo',
+      description: 'Ama sus plantas… pero siempre se acuerda cuando ya es tarde.'
+    },
+    {
+      emoji: '💧',
+      title: 'El regador compulsivo',
+      description: 'Piensa que más agua es igual a más amor… pero siempre las ahoga.'
     }
   ];
 
@@ -233,7 +243,7 @@ export class LandingComponent {
   ];
 
   readonly trustBadges = [
-    { text: '✅ 100% Gratuito', subtitle: 'Sin costos ocultos, siempre gratis' },
+    { text: '✅ 100% Gratuito', subtitle: 'Sin costos ocultos' },
     { text: '💚 Sin permanencia', subtitle: 'Usa cuando lo necesites' },
     { text: '🇨🇴 Hecho en Colombia', subtitle: 'Soporte en español 24/7' }
   ];
