@@ -1,8 +1,0 @@
-.mis-plantas-page {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 6vw, 3rem);
-    padding-bottom: calc(var(--bottom-bar-gap) + env(safe-area-inset-bottom));
-    background-color: #0f1510;
-}
