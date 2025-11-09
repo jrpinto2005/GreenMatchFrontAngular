@@ -1,8 +1,35 @@
 <app-barra-superior></app-barra-superior>
+<div class="top-gap"></div>
 <main class="mis-plantas-page">
-  <p class="text-white">
-    plants are working
-  </p>
+  <div class="container mt-3">
+    <div class="header-row">
+      <h1 style="color:#151e08">Mis plantas</h1>
+      <div class="button-container">
+        <button 
+          class="add-btn" 
+          [class.rotated]="popupOpen"
+          (click)="addPlant()">+</button>
+
+        <!-- pop up -->
+        <div class="popup" *ngIf="popupOpen">
+          <button class="popup-item" routerLink="/add">Agregar una planta</button>
+          <hr>
+          <button class="popup-item" routerLink="/recommend">Recomiendame una planta</button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!plantas || plantas.length === 0" class="text-muted">No tienes plantas guardadas.</div>
+
+    <div *ngIf="plantas && plantas.length">
+      <div class="plant-item" *ngFor="let planta of plantas">
+        <hr class="plant-item">
+          <h2>{{ planta.name }}</h2>
+          <p>Ultimo riego: {{ planta.watered }} dias</p>
+      </div>
+    </div>
+  </div>
 </main>
+<div class="bottom-gap"></div>
 <app-barra-inferior></app-barra-inferior>
 

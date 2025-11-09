@@ -32,4 +32,28 @@ $crema: #ffffee;
     color: #ffffee;
 }
 
+h1 {
+    font-family: "dunkel-sans-condensed", sans-serif;
+    font-weight: 400;
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-family: "amifer",sans-serif;;
+    font-weight: 500;
+    color: #52510b;
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+    line-height: 1.2rem;
+    margin-bottom: 0.2rem;
+    margin-top: 0.5rem;
+}
+
+p {
+    color: #99920b;
+    font-size: 1rem;
+    font-family: "amifer",sans-serif;
+    font-weight: 200;
+}
+
 /* You can add global styles to this file, and also import other style files */
