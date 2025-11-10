@@ -3,17 +3,17 @@
   flex-direction: column;
   min-height: 100vh;
   --bottom-bar-gap: clamp(56px, 7vh, 88px);
-  --chat-bg: #0f1115;
+  --chat-bg: #10150f;
   --chat-text: #e5e7eb;
   --chat-secondary-text: #94a3b8;
-  --chat-message-bg: #1f252f;
+  --chat-message-bg: #172018;
   --chat-message-border: rgba(148, 163, 184, 0.16);
-  --chat-user-bg: #3fbf6b;
+  --chat-user-bg: #1bcf16;
   --chat-user-border: rgba(56, 207, 119, 0.5);
   --chat-user-text: #052814;
-  --chat-input-bg: #161b24;
+  --chat-input-bg: #1c261d;
   --chat-input-border: rgba(148, 163, 184, 0.18);
-  --chat-composer-bg: rgba(13, 16, 22, 0.92);
+  --chat-composer-bg: rgba(13, 16, 22, 0.92); 
   --chat-composer-border: rgba(148, 163, 184, 0.16);
   background: var(--chat-bg);
   color: var(--chat-text);
@@ -140,8 +140,8 @@
   padding-block: clamp(0.9rem, 3vw, 1.25rem);
   padding-bottom: calc(clamp(0.9rem, 3vw, 1.25rem) + env(safe-area-inset-bottom));
   margin-bottom: var(--bottom-bar-gap);
-  background: var(--chat-composer-bg);
-  border-top: 1px solid var(--chat-composer-border);
+  background: transparent;
+  border-top: 0px solid var(--chat-composer-border);
 }
 
 .chat-card__input {
