@@ -7,9 +7,9 @@
         <div
           *ngFor="let msg of messages"
           class="chat-card__message"
-          [class.chat-card__message--self]="msg.from === 'me'"
+          [class.chat-card__message--self]="msg.sender === 'user'"
           role="listitem">
-          <span>{{ msg.text }}</span>
+          <span>{{ msg.content }}</span>
         </div>
       </ng-container>
     </div>

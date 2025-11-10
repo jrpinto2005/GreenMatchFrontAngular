@@ -1,41 +1,87 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BarraSuperiorComponent } from '../barra-superior/barra-superior.component';
 import { BarraInferiorComponent } from '../barra-inferior/barra-inferior.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { ChatMessage, Conversation } from '../models/chat.model';
+import { ChatService } from './chat.service';
 
 interface Message {
-  from: string;
+  from: 'user' | 'assistant';
   text: string;
 }
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [BarraSuperiorComponent, BarraInferiorComponent, CommonModule, FormsModule],
+  imports: [BarraSuperiorComponent, BarraInferiorComponent, CommonModule, FormsModule, HttpClientModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
 
-export class ChatComponent {
-  messages: Message[] = [];
+export class ChatComponent implements OnInit{
+  conversation?: Conversation;
+  messages: ChatMessage[] = [];
   newMessage: string = '';
+  userId: number = 1; //get user from auth
+
+  constructor(private chatService: ChatService) {}
+
+  ngOnInit(): void {
+      this.startConversation();
+  }
 
   handleSubmit() {
     this.sendMessage();
   }
 
-  sendMessage() {
-    if (this.newMessage.trim() === '') return;
+  private getNextId(msgs: ChatMessage[]): number {
+    const used = new Set<number>();
+    for (const m of msgs) {
+      if (typeof m.id === 'number' && Number.isFinite(m.id) && m.id > 0) used.add(m.id);
+    }
+    let id = 1;
+    while (used.has(id)) id++;
+    return id;
+  }
 
-    this.messages.push({ from: 'me', text: this.newMessage });
+  startConversation() {
+    this.chatService.createConversation(this.userId).subscribe({
+      next: (conv) => {
+        this.conversation = conv;
+      },
+      error: (err) => console.error('Error creando conversacion', err)
+    });
+  }
+
+  sendMessage() {
+    if (!this.conversation || !this.newMessage.trim()) return;
+
+    const nextId = this.getNextId(this.messages);
+
+    const userMsg: ChatMessage = {
+      session_id: this.conversation.id,
+      sender: 'user',
+      content: this.newMessage,
+      id: nextId,
+      message_type: '',
+      image_gcs_uri: '',
+      vertex_model_name: '',
+      vertex_response_json: '',
+      created_at: new Date()
+    };
+    this.messages.push(userMsg);
+
+    this.chatService.sendMessage(this.conversation.id, this.newMessage).subscribe({
+      next: (updatedMessages) => {
+        this.messages = updatedMessages;
+      },
+      error: (err) => console.log('Error enviando mensaje', err)
+    });
 
     this.newMessage = '';
-
-    // Fake response
-    setTimeout(() => {
-      this.messages.push({ from: 'bot', text: 'Got it!' });
-    }, 500);
   }
 
 }
