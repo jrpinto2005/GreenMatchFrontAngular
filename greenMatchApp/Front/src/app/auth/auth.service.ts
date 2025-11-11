@@ -1,207 +1,95 @@
-import { Injectable, signal } from '@angular/core';
-
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-  createdAt: number;
-}
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface AuthResponse {
   ok: boolean;
   message: string;
+  user_id?: number;
+  token?: string;
 }
 
-interface LoginResult extends AuthResponse {
-  user?: AuthUser;
-}
-
-interface RegisterPayload {
+export interface RegisterPayload {
   name: string;
   email: string;
   username: string;
   password: string;
 }
 
-const DEFAULT_USER: AuthUser = {
-  id: 'greenmatch-demo',
-  name: 'Maranta Demo',
-  email: 'demo@greenmatch.app',
-  username: 'greenfriend',
-  password: 'Green123!',
-  createdAt: Date.now()
-};
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private readonly usersKey = 'gm_users';
-  private readonly sessionKey = 'gm_session';
-  private readonly currentUserSignal = signal<AuthUser | null>(this.loadSession());
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl ?? 'http://localhost:8000';
 
-  readonly currentUser = this.currentUserSignal.asReadonly();
-
-  constructor() {
-    this.ensureSeedUser();
+  /**
+   * Login con username o email + password
+   * POST /auth/login
+   */
+  login(identifier: string, password: string): Observable<AuthResponse> {
+    const body = { identifier, password };
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/auth/login`, body)
+      .pipe(tap(res => this.handleAuthSideEffects(res)));
   }
 
-  login(identifier: string, password: string): LoginResult {
-    const normalized = identifier.trim().toLowerCase();
-    const users = this.loadUsers();
-    const user = users.find(
-      (candidate) =>
-        candidate.email.toLowerCase() === normalized ||
-        candidate.username.toLowerCase() === normalized
-    );
-
-    if (!user) {
-      return { ok: false, message: 'No encontramos una cuenta con esos datos.' };
-    }
-
-    if (user.password !== password) {
-      return { ok: false, message: 'La contrasena no coincide.' };
-    }
-
-    this.persistSession(user);
-    return { ok: true, message: `Hola ${user.name}`, user };
+  /**
+   * Registro de usuario
+   * POST /auth/register
+   */
+  register(payload: RegisterPayload): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/auth/register`, payload)
+      .pipe(tap(res => this.handleAuthSideEffects(res)));
   }
 
-  register(payload: RegisterPayload): LoginResult {
-    const users = this.loadUsers();
-    const duplicateEmail = users.some(
-      (user) => user.email.toLowerCase() === payload.email.trim().toLowerCase()
-    );
-    if (duplicateEmail) {
-      return { ok: false, message: 'Ese correo ya esta en uso.' };
-    }
-
-    const duplicateUsername = users.some(
-      (user) => user.username.toLowerCase() === payload.username.trim().toLowerCase()
-    );
-
-    if (duplicateUsername) {
-      return { ok: false, message: 'El usuario ya esta registrado.' };
-    }
-
-    const newUser: AuthUser = {
-      id: this.randomId(),
-      name: payload.name.trim(),
-      email: payload.email.trim().toLowerCase(),
-      username: payload.username.trim().toLowerCase(),
-      password: payload.password,
-      createdAt: Date.now()
-    };
-
-    users.push(newUser);
-    this.persistUsers(users);
-    this.persistSession(newUser);
-
-    return { ok: true, message: 'Cuenta creada con exito', user: newUser };
+  /**
+   * Reset de contraseña
+   * POST /auth/reset
+   */
+  resetPassword(identifier: string, newPassword: string): Observable<AuthResponse> {
+    const body = { identifier, new_password: newPassword };
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/reset`, body);
   }
 
-  resetPassword(identifier: string, newPassword: string): AuthResponse {
-    const users = this.loadUsers();
-    const normalized = identifier.trim().toLowerCase();
-    const index = users.findIndex(
-      (user) =>
-        user.email.toLowerCase() === normalized || user.username.toLowerCase() === normalized
-    );
-
-    if (index === -1) {
-      return { ok: false, message: 'No encontramos ese usuario.' };
+  /**
+   * Guardar token/user_id en localStorage (muy simple por ahora)
+   */
+  private handleAuthSideEffects(res: AuthResponse): void {
+    if (!res.ok) {
+      return;
     }
-
-    users[index] = { ...users[index], password: newPassword };
-    this.persistUsers(users);
-
-    if (this.currentUserSignal()?.id === users[index].id) {
-      this.persistSession(users[index]);
+    if (res.token) {
+      localStorage.setItem('auth_token', res.token);
     }
+    if (res.user_id != null) {
+      localStorage.setItem('user_id', String(res.user_id));
+    }
+  }
 
-    return { ok: true, message: 'Actualizamos tu contrasena.' };
+  /**
+   * Helpers opcionales para el resto de la app
+   */
+  getToken(): string | null {
+    return localStorage.getItem('auth_token');
+  }
+
+  getUserId(): number | null {
+    const raw = localStorage.getItem('user_id');
+    return raw ? Number(raw) : null;
   }
 
   logout(): void {
-    this.persistSession(null);
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_id');
   }
-
   isAuthenticated(): boolean {
-    return this.currentUserSignal() !== null;
-  }
+  const token = this.getToken();
+  // Si existe token, asumimos que está autenticado (por ahora sin verificar JWT)
+  return !!token;
+}
 
-  getCurrentUser(): AuthUser | null {
-    return this.currentUserSignal();
-  }
-
-  private loadUsers(): AuthUser[] {
-    if (typeof window === 'undefined') {
-      return [DEFAULT_USER];
-    }
-
-    try {
-      const stored = localStorage.getItem(this.usersKey);
-      if (!stored) {
-        return [DEFAULT_USER];
-      }
-      const parsed = JSON.parse(stored) as AuthUser[];
-      return parsed.length > 0 ? parsed : [DEFAULT_USER];
-    } catch {
-      return [DEFAULT_USER];
-    }
-  }
-
-  private persistUsers(users: AuthUser[]): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    localStorage.setItem(this.usersKey, JSON.stringify(users));
-  }
-
-  private loadSession(): AuthUser | null {
-    if (typeof window === 'undefined') {
-      return null;
-    }
-    try {
-      const stored = localStorage.getItem(this.sessionKey);
-      return stored ? (JSON.parse(stored) as AuthUser) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private persistSession(user: AuthUser | null): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    if (user) {
-      localStorage.setItem(this.sessionKey, JSON.stringify(user));
-    } else {
-      localStorage.removeItem(this.sessionKey);
-    }
-    this.currentUserSignal.set(user);
-  }
-
-  private ensureSeedUser(): void {
-    const users = this.loadUsers();
-    const hasSeed = users.some((user) => user.email === DEFAULT_USER.email);
-    if (!hasSeed) {
-      users.push(DEFAULT_USER);
-      this.persistUsers(users);
-    }
-    if (!this.currentUserSignal() && typeof window !== 'undefined') {
-      const stored = localStorage.getItem(this.sessionKey);
-      if (stored) {
-        this.currentUserSignal.set(JSON.parse(stored) as AuthUser);
-      }
-    }
-  }
-
-  private randomId(): string {
-    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-      return crypto.randomUUID();
-    }
-    return `gm-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  }
 }
 
