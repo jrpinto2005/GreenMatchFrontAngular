@@ -22,7 +22,7 @@ export interface RegisterPayload {
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = environment.apiUrl ?? 'http://localhost:8000';
+  private readonly apiUrl = environment.apiUrl;
 
   /**
    * Login con username o email + password

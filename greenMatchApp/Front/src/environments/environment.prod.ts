@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://your-backend-url.a.run.app'
+    apiUrl: 'https://plant-backend-648842954513.us-central1.run.app'
 };

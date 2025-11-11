@@ -9,7 +9,7 @@ import { ChatMessage, ChatResponse, Conversation } from '../models/chat.model';
 })
 export class ChatService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = environment.apiUrl ?? 'http://localhost:8000';
+  private readonly apiUrl = environment.apiUrl;
 
   sendMessage(userId: number, sessionId: number | null, message: string): Observable<ChatResponse> {
     const body: any = {

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 interface Plant {
   id?: number;
@@ -45,7 +46,7 @@ export class AddPlantComponent implements OnInit {
     const payload = this.form.value;
     this.submitting = true;
 
-    this.http.post('assets/data/plants.json', payload).subscribe({
+    this.http.post(`${environment.apiUrl}/plants`, payload).subscribe({
       next: () => {
         this.submitting = false;
         this.router.navigate(['/mis-plantas']);
