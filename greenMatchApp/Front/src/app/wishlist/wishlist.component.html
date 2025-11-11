@@ -1,0 +1,87 @@
+<app-barra-superior></app-barra-superior>
+<div class="top-gap"></div>
+<main class="wishlist-page">
+  <div class="container mt-3">
+    <div class="header-row">
+      <h1 style="color:#151e08">Mi Wishlist</h1>
+      <div class="button-container">
+        <button 
+          class="add-btn" 
+          [class.rotated]="formOpen"
+          (click)="toggleForm()">+</button>
+
+        <!-- Formulario para agregar -->
+        <div class="add-form-popup" *ngIf="formOpen">
+          <h3>Agregar planta a wishlist</h3>
+          <form (ngSubmit)="addToWishlist()">
+            <div class="form-field">
+              <label for="plant-name">Nombre de la planta</label>
+              <input 
+                id="plant-name"
+                type="text" 
+                [(ngModel)]="newPlant.name" 
+                name="name"
+                placeholder="Ej. Monstera Deliciosa"
+                required>
+            </div>
+            
+            <div class="form-field">
+              <label for="plant-reason">¿Por qué la quieres?</label>
+              <textarea 
+                id="plant-reason"
+                [(ngModel)]="newPlant.reason" 
+                name="reason"
+                rows="3"
+                placeholder="Ej. Me encanta su follaje grande y tropical"></textarea>
+            </div>
+            
+            <div class="form-field">
+              <label for="plant-priority">Prioridad</label>
+              <select id="plant-priority" [(ngModel)]="newPlant.priority" name="priority">
+                <option value="alta">Alta</option>
+                <option value="media">Media</option>
+                <option value="baja">Baja</option>
+              </select>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" (click)="toggleForm()">Cancelar</button>
+              <button type="submit" class="btn-submit">Agregar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!wishlistPlants || wishlistPlants.length === 0" class="empty-state">
+      <img src="assets/heart-verde.png" alt="Wishlist vacía" class="empty-image">
+      <p class="empty-text">Tu wishlist está vacía</p>
+      <p class="empty-hint">Agrega plantas que sueñas con tener 💚</p>
+    </div>
+
+    <div *ngIf="wishlistPlants && wishlistPlants.length" class="wishlist-grid">
+      <div class="wishlist-card" *ngFor="let plant of wishlistPlants">
+        <div class="card-header">
+          <div class="priority-badge" [class]="'priority-' + plant.priority">
+            {{ getPriorityLabel(plant.priority) }}
+          </div>
+          <button class="delete-btn" (click)="removePlant(plant)" title="Eliminar">×</button>
+        </div>
+        
+        <h2>{{ plant.name }}</h2>
+        
+        <p class="reason" *ngIf="plant.reason">
+          <strong>Por qué la quiero:</strong> {{ plant.reason }}
+        </p>
+        
+        <p class="date-added">Agregada: {{ plant.dateAdded | date: 'dd/MM/yyyy' }}</p>
+        
+        <button class="btn-got-it" (click)="markAsObtained(plant)">
+          ✓ Ya la conseguí
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="bottom-gap"></div>
+<app-barra-inferior></app-barra-inferior>

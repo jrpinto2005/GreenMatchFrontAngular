@@ -7,6 +7,7 @@ import { LandingComponent } from './landing/landing.component';
 import { AddPlantComponent } from './add-plant/add-plant.component';
 import { RecommendPlantComponent } from './recommend-plant/recommend-plant.component';
 import { authGuard } from './auth/auth.guard';
+import { WishlistComponent } from './wishlist/wishlist.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'mi-horario', component: MiHorarioComponent, canActivate: [authGuard] },
   { path: 'add', component: AddPlantComponent, canActivate: [authGuard] },
   { path: 'recommend', component: RecommendPlantComponent, canActivate: [authGuard]},
+  { path: 'wishlist', component: WishlistComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }
 ];
