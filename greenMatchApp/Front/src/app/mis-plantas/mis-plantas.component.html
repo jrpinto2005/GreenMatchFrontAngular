@@ -1,8 +1,103 @@
 <app-barra-superior></app-barra-superior>
+<div class="top-gap"></div>
 <main class="mis-plantas-page">
-  <p class="text-white">
-    plants are working
-  </p>
-</main>
-<app-barra-inferior></app-barra-inferior>
+  <div class="container mt-3">
+    <div class="header-row">
+      <h1 style="color:#151e08">Mis plantas</h1>
+      <div class="button-container">
+        <button 
+          class="add-btn" 
+          [class.rotated]="popupOpen"
+          (click)="togglePopup()">+</button>
 
+        <!-- Pop-up menu -->
+        <div class="popup-menu" *ngIf="popupOpen">
+          <button 
+            class="popup-item" 
+            (click)="openAddPlantForm()">
+            Agregar una planta
+          </button>
+          <hr class="popup-divider">
+          <button 
+            class="popup-item" 
+            routerLink="/chat"
+            (click)="closePopup()">
+            Recomiéndame una planta
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!plantas || plantas.length === 0" class="empty-state">
+      <img src="assets/logo-verde.png" alt="Sin plantas" class="empty-image">
+      <p class="empty-text">No tienes plantas guardadas</p>
+      <p class="empty-hint">Agrega tu primera planta para comenzar 🌱</p>
+    </div>
+
+    <div *ngIf="plantas && plantas.length" class="plantas-list">
+      <div class="plant-item" *ngFor="let planta of plantas">
+        <div class="plant-content">
+          <div>
+            <hr class="plant-divider">
+            <h2>{{ planta.name }}</h2>
+            <p>Último riego: {{ planta.watered }} días</p>
+          </div>
+          <button class="delete-plant-btn" (click)="removePlant(planta)" title="Eliminar">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Backdrop para el formulario -->
+<div class="form-backdrop" *ngIf="formOpen" (click)="closeForm()"></div>
+
+<!-- Formulario para agregar planta -->
+<aside class="add-plant-form" *ngIf="formOpen" aria-label="Formulario para agregar planta">
+  <header class="form-header">
+    <div>
+      <h2>Agregar una planta</h2>
+      <p class="form-subtitle">Completa los datos de tu nueva planta</p>
+    </div>
+    <button type="button" class="form-close" (click)="closeForm()" aria-label="Cerrar formulario">
+      Cerrar
+    </button>
+  </header>
+
+  <form class="plant-form" (ngSubmit)="addPlant()">
+    <div class="form-field">
+      <label for="plant-name">Nombre de la planta *</label>
+      <input 
+        id="plant-name"
+        type="text" 
+        [(ngModel)]="newPlant.name" 
+        name="name"
+        placeholder="Ej. Monstera Deliciosa"
+        required>
+    </div>
+    
+    <div class="form-field">
+      <label for="plant-watered">Días desde el último riego</label>
+      <input 
+        id="plant-watered"
+        type="number" 
+        [(ngModel)]="newPlant.watered" 
+        name="watered"
+        min="0"
+        placeholder="Ej. 3">
+      <span class="field-hint">¿Hace cuántos días regaste esta planta?</span>
+    </div>
+    
+    <div class="form-actions">
+      <button type="button" class="form-button form-button--ghost" (click)="closeForm()">
+        Cancelar
+      </button>
+      <button type="submit" class="form-button">
+        Agregar planta
+      </button>
+    </div>
+  </form>
+</aside>
+
+<div class="bottom-gap"></div>
+<app-barra-inferior></app-barra-inferior>
