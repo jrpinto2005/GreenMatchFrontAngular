@@ -1,22 +1,19 @@
 export interface ChatMessage {
-    id?: number;
-    session_id?: number;
-    sender: 'user' | 'assistant';
-    content: string;
-    message_type?: string;
-    image_gcs_uri?: string;
-    vertex_model_name?: string;
-    vertex_response_json?: string;
-    created_at?: Date;
+  id?: number;
+  session_id?: number;
+  sender: 'user' | 'assistant';
+  content: string;
+  created_at: Date;
 }
 
 export interface ChatResponse {
-    session_id: number;
-    reply: string;
+  session_id: number;
+  reply: string;
 }
 
 export interface Conversation {
-    id: number;
-    user_id?: number;
-    messages?: ChatMessage[];
+  id: number;
+  started_at: string;    
+  last_activity_at: string;
+  title: string | null;
 }

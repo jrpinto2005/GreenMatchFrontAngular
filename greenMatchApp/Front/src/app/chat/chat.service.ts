@@ -1,47 +1,47 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
-import { ChatMessage, Conversation } from '../models/chat.model';
+import { ChatMessage, ChatResponse, Conversation } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  private baseUrl = environment.apiUrl;
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl ?? 'http://localhost:8000';
 
-constructor(private http: HttpClient) { }
+  sendMessage(userId: number, sessionId: number | null, message: string): Observable<ChatResponse> {
+    const body: any = {
+      message,
+      user_id: userId
+    };
+    if (sessionId != null) {
+      body.session_id = sessionId;
+    }
 
-sendMessage(userId: number | null, sessionId: number | null, message: string) {
-  const body: any = { message };
-
-  if (sessionId) {
-    body.session_id = sessionId;
-  } else {
-    body.user_id = userId;
+    return this.http.post<ChatResponse>(`${this.apiUrl}/chat/message`, body);
   }
 
-  return this.http.post<any>(`${this.baseUrl}/chat/message`, body);
+  getUserConversations(userId: number): Observable<Conversation[]> {
+    return this.http.get<Conversation[]>(`${this.apiUrl}/chat/sessions`, {
+      params: { user_id: userId.toString() }
+    });
+  }
 
-}
-
-getConversationChats(conversationId: number): Observable<ChatMessage[]> {
-  return this.http.get<ChatMessage[]>(`${this.baseUrl}/conversations/${conversationId}/chats`);
-}
-
-getUserConversations(userId: number): Observable<Conversation[]> {
-  return this.http.get<Conversation[]>(`${this.baseUrl}/conversations/user/${userId}`);
-}
-
-/*createConversation(userId: number): Observable<Conversation> {
-  return this.http.post<Conversation>(`${this.baseUrl}/conversations`, { user_id: userId });
-}
-
-sendMessage(conversationId: number, content: string): Observable<ChatMessage[]> {
-  return this.http.post<ChatMessage[]>(
-    `${this.baseUrl}/conversations/${conversationId}/chats`,
-    { content }
-  );
-}*/
-
+  getConversationChats(sessionId: number): Observable<ChatMessage[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/chat/sessions/${sessionId}/messages`)
+      .pipe(
+        map(rows =>
+          rows.map(row => ({
+            id: row.id,
+            session_id: row.session_id,
+            sender: row.sender,
+            content: row.content ?? '',
+            created_at: new Date(row.created_at)
+          }) as ChatMessage)
+        )
+      );
+  }
 }

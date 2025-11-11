@@ -1,17 +1,47 @@
 <app-barra-superior (toggleSideBar)="toggleSidebar()"></app-barra-superior>
 
-<!--Sidebar-->
-<div class="sidebar" [class.open]="showSidebar">
-  <h3>Conversaciones anteriores</h3>
-  <ul>
-    <li *ngFor="let conv of pastConversations" (click)="selectConversation(conv)">
-      Chat #{{ conv.id }}
-    </li>
-  </ul>
-</div>
+<!-- Overlay para mobile cuando el sidebar está abierto -->
+<div class="sidebar-backdrop" *ngIf="showSidebar" (click)="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" [class.sidebar--open]="showSidebar">
+  <header class="sidebar__header">
+    <h3>Conversaciones</h3>
+    <button type="button" class="sidebar__new" (click)="newConversation()">
+      + Nueva conversación
+    </button>
+  </header>
+
+  <section class="sidebar__body">
+    <ng-container *ngIf="pastConversations?.length; else noConversations">
+      <ul class="sidebar__list">
+        <li
+          *ngFor="let conv of pastConversations"
+          class="sidebar__item"
+          [class.sidebar__item--active]="conv.id === sessionId"
+          (click)="selectConversation(conv)">
+          <div class="sidebar__item-title">
+            {{ conv.title || ('Chat #' + conv.id) }}
+          </div>
+          <div class="sidebar__item-meta">
+            Última actividad:
+            {{ conv.last_activity_at | date: 'short' }}
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-template #noConversations>
+      <div class="sidebar__empty">
+        <p>No tienes conversaciones previas.</p>
+        <p>Empieza una nueva para verlas aquí.</p>
+      </div>
+    </ng-template>
+  </section>
+</aside>
 
 <main class="chat-page">
-  <section class="chat-card" aria-label="Conversacion">
+  <section class="chat-card" aria-label="Conversación">
     <div class="chat-card__messages" role="log" aria-live="polite">
       <ng-container *ngIf="messages.length > 0; else emptyState">
         <div
@@ -26,9 +56,9 @@
 
     <ng-template #emptyState>
       <div class="chat-card__empty" role="presentation">
-        <img src="assets/chat-verde.png" alt="Ilustracion de chat" loading="lazy" />
+        <img src="assets/chat-verde.png" alt="Ilustración de chat" loading="lazy" />
         <h2>Bienvenido al chat</h2>
-        <p>Envia tu primer mensaje para iniciar la conversacion.</p>
+        <p>Envía tu primer mensaje para iniciar la conversación.</p>
       </div>
     </ng-template>
 
