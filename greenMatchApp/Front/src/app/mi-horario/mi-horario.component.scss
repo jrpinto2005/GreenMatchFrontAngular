@@ -520,4 +520,26 @@
   .mi-horario-form__actions {
     flex-direction: column-reverse;
   }
+
+  h1 {
+    font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-weight: 400;
+  }
+
+  h2 {
+      font-family: "amifer",sans-serif;;
+      font-weight: 500;
+      color: #52510b;
+      font-size: 1.5rem;
+      line-height: 1.2rem;
+      margin-bottom: 0.2rem;
+      margin-top: 0.5rem;
+  }
+
+  p {
+      color: #99920b;
+      font-size: 1rem;
+      font-family: "amifer",sans-serif;
+      font-weight: 200;
+  }
 }
