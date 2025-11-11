@@ -19,7 +19,7 @@ import { ChatService } from './chat.service';
 export class ChatComponent {
   messages: ChatMessage[] = [];
   newMessage = '';
-  userId = 1;
+  userId = Number(localStorage.getItem('user_id'));
   sessionId: number | null = null;
 
   constructor(private chatService: ChatService) {}
