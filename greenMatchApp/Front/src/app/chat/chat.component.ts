@@ -5,10 +5,55 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { ChatMessage, Conversation } from '../models/chat.model';
+import { ChatMessage, ChatResponse } from '../models/chat.model';
 import { ChatService } from './chat.service';
 
-interface Message {
+@Component({
+  selector: 'app-chat',
+  standalone: true,
+  imports: [BarraSuperiorComponent, BarraInferiorComponent, CommonModule, FormsModule, HttpClientModule],
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.scss']
+})
+
+export class ChatComponent {
+  messages: ChatMessage[] = [];
+  newMessage = '';
+  userId = 1;
+  sessionId: number | null = null;
+
+  constructor(private chatService: ChatService) {}
+
+  sendMessage() {
+    if (!this.newMessage.trim()) return;
+
+    this.messages.push({
+      sender: 'user',
+      content: this.newMessage,
+      created_at: new Date()
+    } as ChatMessage);
+
+    this.chatService.sendMessage(this.userId, this.sessionId, this.newMessage)
+      .subscribe({
+        next: (response: ChatResponse) => {
+          this.sessionId = response.session_id;
+
+          this.messages.push({
+            sender: 'assistant',
+            content: response.reply,
+            session_id: this.sessionId,
+            created_at: new Date()
+          } as ChatMessage);
+        },
+        error: (err) => console.error('Error enviando mensaje', err)
+      });
+
+      this.newMessage = '';
+  }
+}
+
+
+/*interface Message {
   from: 'user' | 'assistant';
   text: string;
 }
@@ -84,4 +129,4 @@ export class ChatComponent implements OnInit{
     this.newMessage = '';
   }
 
-}
+}*/
