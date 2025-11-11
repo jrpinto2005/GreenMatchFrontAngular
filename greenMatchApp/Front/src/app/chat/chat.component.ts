@@ -4,8 +4,7 @@ import { BarraInferiorComponent } from '../barra-inferior/barra-inferior.compone
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { ChatMessage, ChatResponse } from '../models/chat.model';
+import { ChatMessage, ChatResponse, Conversation } from '../models/chat.model';
 import { ChatService } from './chat.service';
 
 @Component({
@@ -21,6 +20,9 @@ export class ChatComponent {
   newMessage = '';
   userId = Number(localStorage.getItem('user_id'));
   sessionId: number | null = null;
+
+  showSidebar = false;
+  pastConversations: Conversation[] = [];
 
   constructor(private chatService: ChatService) {}
 
@@ -54,6 +56,34 @@ export class ChatComponent {
 
       this.newMessage = '';
   }
+
+  toggleSidebar() {
+    this.showSidebar = !this.showSidebar;
+
+    if (this.showSidebar && this.pastConversations.length === 0) {
+      this.loadPastConversations();
+    }
+  }
+
+  loadPastConversations() {
+    const userId = Number(localStorage.getItem('user_id'));
+    this.chatService.getUserConversations(userId).subscribe({
+      next: (convs) => (this.pastConversations = convs),
+      error: (err) => console.error('Error loading past conversations', err)
+    });
+  }
+
+  selectConversation(conv: Conversation) {
+    this.sessionId = conv.id;
+    this.showSidebar = false;
+    this.chatService.getConversationChats(conv.id).subscribe({
+      next: (msgs) => {
+
+      },
+      error: (err) => console.error('Error loading messages', err)
+    });
+  }
+
 }
 
 
