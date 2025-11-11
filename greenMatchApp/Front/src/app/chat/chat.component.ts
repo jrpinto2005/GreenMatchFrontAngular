@@ -24,6 +24,10 @@ export class ChatComponent {
 
   constructor(private chatService: ChatService) {}
 
+  handleSubmit() {
+    this.sendMessage();
+  }
+  
   sendMessage() {
     if (!this.newMessage.trim()) return;
 
