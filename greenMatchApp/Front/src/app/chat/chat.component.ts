@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { BarraSuperiorComponent } from '../barra-superior/barra-superior.component';
 import { BarraInferiorComponent } from '../barra-inferior/barra-inferior.component';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatMessage, ChatResponse, Conversation } from '../models/chat.model';
 import { ChatService } from './chat.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat',
@@ -20,7 +22,7 @@ import { ChatService } from './chat.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
   messages: ChatMessage[] = [];
   newMessage = '';
   userId = Number(localStorage.getItem('user_id'));
@@ -29,7 +31,21 @@ export class ChatComponent {
   showSidebar = false;
   pastConversations: Conversation[] = [];
 
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private chatService: ChatService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    // Si viene un prompt desde Mis Plantas (o cualquier pantalla), autoenvíalo
+    this.route.queryParamMap.pipe(take(1)).subscribe(params => {
+      const prompt = params.get('prompt');
+      if (prompt && prompt.trim()) {
+        this.newMessage = prompt.trim();
+        this.sendMessage();
+      }
+    });
+  }
 
   // Barra inferior dispara esto
   handleSubmit() {
@@ -72,14 +88,13 @@ export class ChatComponent {
       },
       error: (err) => {
         console.error('Error enviando mensaje', err);
-        // opcional: mostrar error en UI y quitar el último mensaje del usuario
+        // opcional: mostrar error en UI y revertir el último push si quieres
       }
     });
   }
 
   toggleSidebar() {
     this.showSidebar = !this.showSidebar;
-
     if (this.showSidebar) {
       this.loadPastConversations();
     }

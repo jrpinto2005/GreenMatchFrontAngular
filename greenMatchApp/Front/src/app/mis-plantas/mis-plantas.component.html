@@ -1,103 +1,124 @@
 <app-barra-superior></app-barra-superior>
 <div class="top-gap"></div>
+
 <main class="mis-plantas-page">
-  <div class="container mt-3">
+  <div class="container">
+    <!-- Header -->
     <div class="header-row">
-      <h1 style="color:#151e08">Mis plantas</h1>
-      <div class="button-container">
-        <button 
-          class="add-btn" 
-          [class.rotated]="popupOpen"
-          (click)="togglePopup()">+</button>
+      <h1>Mis plantas</h1>
+      <button class="btn-primary" (click)="openCreate()">+ Agregar planta</button>
+    </div>
 
-        <!-- Pop-up menu -->
-        <div class="popup-menu" *ngIf="popupOpen">
-          <button 
-            class="popup-item" 
-            (click)="openAddPlantForm()">
-            Agregar una planta
-          </button>
-          <hr class="popup-divider">
-          <button 
-            class="popup-item" 
-            routerLink="/chat"
-            (click)="closePopup()">
-            Recomiéndame una planta
-          </button>
-        </div>
+    <!-- Loading -->
+    <ng-container *ngIf="loading">
+      <div class="mp-grid">
+        <div class="mp-card skeleton" *ngFor="let i of [1,2,3,4,5,6]"></div>
+      </div>
+    </ng-container>
+
+    <!-- Empty -->
+    <ng-container *ngIf="!loading && (!plantas || plantas.length===0)">
+      <div class="empty-state">
+        <img src="assets/logo-verde.png" alt="Sin plantas" class="empty-image">
+        <p class="empty-text">No tienes plantas guardadas</p>
+        <p class="empty-hint">Agrega tu primera planta para comenzar 🌱</p>
+      </div>
+    </ng-container>
+
+    <!-- Grid -->
+<section *ngIf="!loading && plantas?.length" class="mp-grid">
+  <article class="mp-card" *ngFor="let p of plantas">
+    <!-- Toolbar superior: icono archivar (opcional) -->
+    <div class="mp-toolbar">
+      <button class="btn-icon" (click)="archive(p)" title="Archivar" aria-label="Archivar">
+        <!-- Ícono minimal (SVG) -->
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 7h18M6 7l1 14h10l1-14M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Imagen -->
+    <div class="mp-media">
+      <img
+        src="assets/plant-placeholder.jpg"
+        alt="Foto de {{ p.common_name }}"
+        loading="lazy" />
+      <span class="mp-badge" [ngClass]="{
+        'baja': p.light==='baja',
+        'media': p.light==='media',
+        'alta': p.light==='alta',
+        'indirecta': p.light==='indirecta'
+      }">{{ p.light || '—' }}</span>
+    </div>
+
+    <!-- Contenido -->
+    <div class="mp-body">
+      <h3 class="mp-title">
+        {{ p.common_name }}
+        <span class="mp-nickname" *ngIf="p.nickname">· {{ p.nickname }}</span>
+      </h3>
+
+      <div class="mp-chips">
+        <span class="chip" *ngIf="p.location"><i class="dot"></i>{{ p.location }}</span>
+        <span class="chip chip-muted">{{ p.source }}</span>
+      </div>
+
+      <p class="mp-notes" *ngIf="p.notes">{{ p.notes }}</p>
+
+      <div class="mp-meta">
+        <span>{{ p.created_at | date:'shortDate' }}</span>
+        <span class="sep">•</span>
+        <span class="status">{{ p.status }}</span>
       </div>
     </div>
 
-    <div *ngIf="!plantas || plantas.length === 0" class="empty-state">
-      <img src="assets/logo-verde.png" alt="Sin plantas" class="empty-image">
-      <p class="empty-text">No tienes plantas guardadas</p>
-      <p class="empty-hint">Agrega tu primera planta para comenzar 🌱</p>
-    </div>
+    <!-- Acciones (solo 2) -->
+    <footer class="mp-actions">
+      <button class="btn-tonic" (click)="openDetail(p)">Ver detalle</button>
+      <button class="btn-outline" (click)="openEdit(p)">Editar</button>
+      <!-- OJO: “Crear plan” ya NO va aquí -->
+    </footer>
+  </article>
+</section>
 
-    <div *ngIf="plantas && plantas.length" class="plantas-list">
-      <div class="plant-item" *ngFor="let planta of plantas">
-        <div class="plant-content">
-          <div>
-            <hr class="plant-divider">
-            <h2>{{ planta.name }}</h2>
-            <p>Último riego: {{ planta.watered }} días</p>
-          </div>
-          <button class="delete-plant-btn" (click)="removePlant(planta)" title="Eliminar">×</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
 
-<!-- Backdrop para el formulario -->
-<div class="form-backdrop" *ngIf="formOpen" (click)="closeForm()"></div>
-
-<!-- Formulario para agregar planta -->
-<aside class="add-plant-form" *ngIf="formOpen" aria-label="Formulario para agregar planta">
-  <header class="form-header">
-    <div>
-      <h2>Agregar una planta</h2>
-      <p class="form-subtitle">Completa los datos de tu nueva planta</p>
-    </div>
-    <button type="button" class="form-close" (click)="closeForm()" aria-label="Cerrar formulario">
-      Cerrar
-    </button>
+<!-- Modal/Panel (tu lógica TS actual) -->
+<div class="modal-backdrop" *ngIf="formOpen" (click)="closeForm()"></div>
+<section class="modal" *ngIf="formOpen" aria-label="Formulario planta">
+  <header class="modal-header">
+    <h2>{{ editing ? 'Editar planta' : 'Agregar planta' }}</h2>
+    <button class="close" (click)="closeForm()" aria-label="Cerrar">×</button>
   </header>
 
-  <form class="plant-form" (ngSubmit)="addPlant()">
-    <div class="form-field">
-      <label for="plant-name">Nombre de la planta *</label>
-      <input 
-        id="plant-name"
-        type="text" 
-        [(ngModel)]="newPlant.name" 
-        name="name"
-        placeholder="Ej. Monstera Deliciosa"
-        required>
-    </div>
-    
-    <div class="form-field">
-      <label for="plant-watered">Días desde el último riego</label>
-      <input 
-        id="plant-watered"
-        type="number" 
-        [(ngModel)]="newPlant.watered" 
-        name="watered"
-        min="0"
-        placeholder="Ej. 3">
-      <span class="field-hint">¿Hace cuántos días regaste esta planta?</span>
-    </div>
-    
-    <div class="form-actions">
-      <button type="button" class="form-button form-button--ghost" (click)="closeForm()">
-        Cancelar
-      </button>
-      <button type="submit" class="form-button">
-        Agregar planta
-      </button>
+  <form class="modal-body" (ngSubmit)="saveForm()">
+    <label>Nombre común *</label>
+    <input [(ngModel)]="form.common_name" name="common_name" required placeholder="Ej: Monstera" />
+
+    <label>Apodo</label>
+    <input [(ngModel)]="form.nickname" name="nickname" placeholder="Ej: La Moni" />
+
+    <label>Ubicación</label>
+    <input [(ngModel)]="form.location" name="location" placeholder="sala, balcón..." />
+
+    <label>Luz</label>
+    <select [(ngModel)]="form.light" name="light">
+      <option value="">(sin especificar)</option>
+      <option value="baja">baja</option>
+      <option value="media">media</option>
+      <option value="alta">alta</option>
+      <option value="indirecta">indirecta</option>
+    </select>
+
+    <label>Notas</label>
+    <textarea [(ngModel)]="form.notes" name="notes" rows="3" placeholder="algo que quieras recordar..."></textarea>
+
+    <div class="modal-actions">
+      <button type="button" class="btn" (click)="closeForm()">Cancelar</button>
+      <button type="submit" class="btn-primary">{{ editing ? 'Guardar' : 'Agregar' }}</button>
     </div>
   </form>
-</aside>
+</section>
 
 <div class="bottom-gap"></div>
 <app-barra-inferior></app-barra-inferior>

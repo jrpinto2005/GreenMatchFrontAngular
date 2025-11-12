@@ -1,122 +1,125 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { BarraInferiorComponent } from '../barra-inferior/barra-inferior.component';
-import { BarraSuperiorComponent } from '../barra-superior/barra-superior.component';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
-interface Plant {
-  id?: number;
-  name?: string;
-  watered?: number;
-}
+import { BarraSuperiorComponent } from '../barra-superior/barra-superior.component';
+import { BarraInferiorComponent } from '../barra-inferior/barra-inferior.component';
+import { Plant } from '../models/plants.model';
+import { PlantService } from './plants.service';
 
 @Component({
   selector: 'mis-plantas',
   standalone: true,
-  imports: [
-    BarraInferiorComponent,
-    BarraSuperiorComponent,
-    CommonModule,
-    RouterLink,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule, RouterLink, BarraSuperiorComponent, BarraInferiorComponent],
   templateUrl: './mis-plantas.component.html',
   styleUrls: ['./mis-plantas.component.scss']
 })
 export class MisPlantasComponent implements OnInit {
+  private readonly plantSvc = inject(PlantService);
+  private readonly router = inject(Router);
+
+  userId = Number(localStorage.getItem('user_id'));
+  loading = false;
+  error: string | null = null;
 
   plantas: Plant[] = [];
-  popupOpen = false;
-  formOpen = false;
 
-  newPlant = {
-    name: '',
-    watered: 0
+  // UI estado modal
+  formOpen = false;
+  editing: Plant | null = null;
+  form = {
+    common_name: '',
+    nickname: '',
+    location: '',
+    light: '',
+    notes: ''
   };
 
-  constructor(private http: HttpClient) { }
-
-  togglePopup() {
-    this.popupOpen = !this.popupOpen;
+  ngOnInit(): void {
+    this.fetch();
   }
 
-  closePopup() {
-    this.popupOpen = false;
+  fetch() {
+    if (!this.userId) return;
+    this.loading = true;
+    this.error = null;
+    this.plantSvc.list(this.userId).subscribe({
+      next: (rows) => { this.plantas = rows; this.loading = false; },
+      error: (err) => { this.error = 'No se pudieron cargar tus plantas'; this.loading = false; console.error(err); }
+    });
   }
 
-  openAddPlantForm() {
-    this.closePopup();
+  // ---- Alta / Edición ----
+  openCreate() {
+    this.editing = null;
+    this.form = { common_name: '', nickname: '', location: '', light: '', notes: '' };
     this.formOpen = true;
-    this.resetForm();
   }
-
-  closeForm() {
-    this.formOpen = false;
-    this.resetForm();
-  }
-
-  resetForm() {
-    this.newPlant = {
-      name: '',
-      watered: 0
+  openEdit(p: Plant) {
+    this.editing = p;
+    this.form = {
+      common_name: p.common_name || '',
+      nickname: p.nickname || '',
+      location: p.location || '',
+      light: p.light || '',
+      notes: p.notes || ''
     };
+    this.formOpen = true;
   }
+  closeForm() { this.formOpen = false; }
 
-  addPlant() {
-    if (!this.newPlant.name.trim()) {
-      alert('Por favor ingresa el nombre de la planta');
-      return;
-    }
+  saveForm() {
+    if (!this.userId) return;
 
-    const plant: Plant = {
-      id: Date.now(),
-      name: this.newPlant.name.trim(),
-      watered: this.newPlant.watered || 0
-    };
-
-    this.plantas.unshift(plant);
-    this.closeForm();
-    
-    // Aquí podrías agregar lógica para guardar en el backend o localStorage
-    console.log('Planta agregada:', plant);
-  }
-
-  removePlant(plant: Plant) {
-    const confirmed = confirm(`¿Eliminar "${plant.name}" de tus plantas?`);
-    if (confirmed) {
-      this.plantas = this.plantas.filter(p => p.id !== plant.id);
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
-    const clickedInsidePopup = !!target.closest('.popup-menu');
-    const clickedInsideForm = !!target.closest('.add-plant-panel');
-    const clickedAddButton = !!target.closest('.add-btn');
-
-    if (this.popupOpen && !clickedInsidePopup && !clickedAddButton && !clickedInsideForm) {
-      this.popupOpen = false;
-    }
-  }
-
-  ngOnInit() {
-    this.http.get<any>('assets/data/plants.json')
-      .subscribe({
-        next: data => {
-          if (Array.isArray(data)) {
-            this.plantas = data;
-          } else if (data && Array.isArray(data.plants)) {
-            this.plantas = data.plants;
-          } else if (data && typeof data === 'object') {
-            this.plantas = Object.values(data) as Plant[];
-          } else {
-            this.plantas = [];
-          }
-        },
-        error: err => console.error('Failed to load plants.json', err)
+    if (this.editing) {
+      this.plantSvc.patch(this.editing.id, {
+        common_name: this.form.common_name,
+        nickname: this.form.nickname,
+        location: this.form.location,
+        light: this.form.light,
+        notes: this.form.notes
+      }).subscribe({
+        next: () => { this.formOpen = false; this.fetch(); },
+        error: (e) => console.error('No se pudo actualizar', e)
       });
+    } else {
+      if (!this.form.common_name.trim()) { alert('Nombre común es obligatorio'); return; }
+      this.plantSvc.create({
+        user_id: this.userId,
+        common_name: this.form.common_name.trim(),
+        nickname: this.form.nickname || undefined,
+        location: this.form.location || undefined,
+        light: this.form.light || undefined,
+        notes: this.form.notes || undefined,
+        source: 'manual'
+      }).subscribe({
+        next: () => { this.formOpen = false; this.fetch(); },
+        error: (e) => console.error('No se pudo crear', e)
+      });
+    }
+  }
+
+  archive(p: Plant) {
+    if (!confirm(`¿Archivar "${p.common_name}"?`)) return;
+    this.plantSvc.archive(p.id).subscribe({
+      next: () => this.fetch(),
+      error: (e) => console.error('No se pudo archivar', e)
+    });
+  }
+
+  // ---- Navegar a detalle ----
+  openDetail(p: Plant) {
+    this.router.navigate(['/mis-plantas', p.id]);
+  }
+
+  // ---- Botón "Crear plan" → abrir chat con prompt ----
+  crearPlan(p: Plant) {
+    const luzLoc = [p.light, p.location].filter(Boolean).join(' / ');
+    const prompt = luzLoc
+      ? `Dame plan para ${p.common_name} en ${luzLoc}`
+      : `Dame plan para ${p.common_name}`;
+    // pasa el prompt al chat vía query param
+    this.router.navigate(['/chat'], { queryParams: { prompt } });
   }
 }

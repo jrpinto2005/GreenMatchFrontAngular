@@ -1,0 +1,124 @@
+<app-barra-superior></app-barra-superior>
+
+<main class="detail">
+  <div class="wrap glass">
+
+    <!-- HERO (imagen estática por ahora) -->
+    <figure class="hero">
+      <img src="assets/plant-placeholder.jpg" alt="Planta" loading="lazy" />
+      <figcaption class="hero-badge" *ngIf="plant?.light">{{ plant.light }}</figcaption>
+    </figure>
+
+    <!-- Header -->
+    <ng-container *ngIf="!loadingPlant && plant; else headerSkeleton">
+      <header class="header">
+        <div class="title-block">
+          <h1 class="title">
+            {{ plant.common_name }}
+            <small *ngIf="plant.nickname" class="nickname">· {{ plant.nickname }}</small>
+          </h1>
+
+          <div class="chips">
+            <span class="chip" *ngIf="plant.location">{{ plant.location }}</span>
+            <span class="chip chip--muted">{{ plant.source }}</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Botón outline local basado en Bootstrap -->
+          <button class=" btn-back" (click)="back()">Volver</button>
+
+          <!-- Mostrar “Crear plan” SOLO cuando ya cargó el plan y NO existe -->
+          <button
+            class="btn-cp"
+            *ngIf="!loadingPlan && !plan"
+            (click)="crearPlan()">
+            Crear plan
+          </button>
+        </div>
+      </header>
+    </ng-container>
+
+    <ng-template #headerSkeleton>
+      <div class="skeleton title"></div>
+      <div class="skeleton chips"></div>
+    </ng-template>
+
+    <!-- Plan de cuidado (contenido principal) -->
+    <section class="careplan" aria-labelledby="careplan-title">
+      <h2 id="careplan-title" class="section-title">Plan de cuidado</h2>
+
+      <!-- Cargando plan -->
+      <div class="grid plan-grid" *ngIf="loadingPlan" aria-live="polite">
+        <div class="skeleton block"></div>
+        <div class="skeleton block"></div>
+        <div class="skeleton block"></div>
+        <div class="skeleton block"></div>
+        <div class="skeleton block wide"></div>
+      </div>
+
+      <!-- Con plan -->
+      <ng-container *ngIf="!loadingPlan && plan">
+        <div class="grid plan-grid">
+          <article class="card glass-soft" aria-labelledby="riego-title">
+            <h4 id="riego-title">Riego</h4>
+            <p class="em">{{ plan.plan_json.riego.frecuencia || '—' }}</p>
+            <p>{{ plan.plan_json.riego.detalle || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft" aria-labelledby="luz-title">
+            <h4 id="luz-title">Luz</h4>
+            <p>{{ plan.plan_json.luz.detalle || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft" aria-labelledby="temp-title">
+            <h4 id="temp-title">Temperatura</h4>
+            <p>{{ plan.plan_json.temperatura || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft" aria-labelledby="hum-title">
+            <h4 id="hum-title">Humedad</h4>
+            <p>{{ plan.plan_json.humedad || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft" aria-labelledby="fert-title">
+            <h4 id="fert-title">Fertilización</h4>
+            <p class="em">{{ plan.plan_json.fertilizacion.frecuencia || '—' }}</p>
+            <p>{{ plan.plan_json.fertilizacion.detalle || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft" aria-labelledby="poda-title">
+            <h4 id="poda-title">Poda</h4>
+            <p>{{ plan.plan_json.poda || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft full" aria-labelledby="plagas-title">
+            <h4 id="plagas-title">Plagas</h4>
+            <p>{{ plan.plan_json.plagas || '—' }}</p>
+          </article>
+
+          <article class="card glass-soft full" *ngIf="plan.plan_json.alertas?.length" aria-labelledby="alertas-title">
+            <h4 id="alertas-title">Alertas</h4>
+            <ul class="alertas">
+              <li *ngFor="let a of plan.plan_json.alertas">{{ a }}</li>
+            </ul>
+          </article>
+        </div>
+
+        <small class="plan-meta">
+          Generado: {{ plan.created_at | date:'short' }}
+        </small>
+      </ng-container>
+
+      <!-- Sin plan -->
+      <div class="no-plan" *ngIf="!loadingPlan && !plan">
+        <div class="no-plan__text">
+          <p>No hay plan de cuidado todavía.</p>
+          <small>Genera uno con base en tu luz/ubicación actuales.</small>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<app-barra-inferior></app-barra-inferior>
