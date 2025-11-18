@@ -1,4 +1,17 @@
 <footer class="barra-inferior" role="navigation" aria-label="Navegacion inferior">
+  <!-- Tirador para colapsar / expandir -->
+  <button
+  type="button"
+  class="barra-inferior__handle"
+  (click)="toggleCollapsed()"
+  [attr.aria-expanded]="!isCollapsed">
+  <span class="visually-hidden">
+    {{ isCollapsed ? 'Mostrar navegación inferior' : 'Ocultar navegación inferior' }}
+  </span>
+</button>
+
+
+  <!-- Nav principal -->
   <nav class="barra-inferior__nav">
     <a
       class="barra-inferior__item"

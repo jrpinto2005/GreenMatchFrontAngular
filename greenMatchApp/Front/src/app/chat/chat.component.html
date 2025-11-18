@@ -1,15 +1,22 @@
 <app-barra-superior (toggleSideBar)="toggleSidebar()"></app-barra-superior>
 
 <!-- Overlay para mobile cuando el sidebar está abierto -->
-<div class="sidebar-backdrop" *ngIf="showSidebar" (click)="toggleSidebar()"></div>
+<div
+  class="sidebar-backdrop"
+  *ngIf="showSidebar"
+  (click)="toggleSidebar()">
+</div>
 
-<!-- Sidebar -->
+<!-- Sidebar de conversaciones -->
 <aside class="sidebar" [class.sidebar--open]="showSidebar">
   <header class="sidebar__header">
-    <h3>Conversaciones</h3>
     <button type="button" class="sidebar__new" (click)="newConversation()">
-      + Nueva conversación
+      Nueva conversación
     </button>
+
+    <div class="sidebar__title">
+      Chats
+    </div>
   </header>
 
   <section class="sidebar__body">
@@ -42,46 +49,140 @@
 
 <main class="chat-page">
   <section class="chat-card" aria-label="Conversación">
-    <div class="chat-card__messages" role="log" aria-live="polite">
+    <!-- LISTA DE MENSAJES -->
+    <div
+      class="chat-card__messages"
+      role="log"
+      aria-live="polite"
+      #messagesContainer>
       <ng-container *ngIf="messages.length > 0; else emptyState">
         <div
           *ngFor="let msg of messages"
           class="chat-card__message"
           [class.chat-card__message--self]="msg.sender === 'user'"
           role="listitem">
-          <span>{{ msg.content }}</span>
+
+          <!-- Imágenes del mensaje (si existen) -->
+          <div
+            class="chat-card__images"
+            *ngIf="msg.image_gcs_uris?.length">
+            <figure
+              class="chat-card__image-wrapper"
+              *ngFor="let img of msg.image_gcs_uris; let i = index">
+              <img
+                [src]="img"
+                [alt]="msg.sender === 'user'
+                  ? 'Imagen enviada por ti'
+                  : 'Imagen enviada por el asistente'"
+                loading="lazy" />
+            </figure>
+          </div>
+
+          <!-- Texto del mensaje (Markdown) -->
+          <div class="chat-card__message-body" *ngIf="msg.content">
+            <div
+              class="chat-card__markdown"
+              [innerHTML]="renderMarkdown(msg.content)">
+            </div>
+          </div>
         </div>
       </ng-container>
     </div>
 
+    <!-- EMPTY STATE -->
     <ng-template #emptyState>
-      <div class="chat-card__empty" role="presentation">
-        <img src="assets/chat-verde.png" alt="Ilustración de chat" loading="lazy" />
-        <h2>Bienvenido al chat</h2>
-        <p>Envía tu primer mensaje para iniciar la conversación.</p>
-      </div>
-    </ng-template>
+    <div class="chat-card__empty" role="presentation">
+      <h2 class="chat-card__empty-title">
+        Bienvenido al chat de GreenMatch
+      </h2>
 
-    <form class="chat-card__composer" (ngSubmit)="handleSubmit()" novalidate>
-      <label class="visually-hidden" for="chat-message">Escribe tu mensaje</label>
-      <div class="chat-card__input">
-        <input
-          id="chat-message"
-          name="message"
-          type="text"
-          [(ngModel)]="newMessage"
-          placeholder="Escribe un mensaje..."
-          autocomplete="off"
-          aria-label="Mensaje a enviar" />
+      <p class="chat-card__empty-subtitle">
+        Cuéntame sobre tus plantas y te ayudo con riego, luz, trasplantes y planes de cuidado personalizados.
+      </p>
+
+      <p class="chat-card__empty-hint">
+        Tip: puedes empezar adjuntando imágenes de tu planta para identifcarla y luego preguntarme sobre sus cuidados.
+      </p>
+    </div>
+  </ng-template>
+
+
+    <!-- PREVIEW DE IMÁGENES SELECCIONADAS -->
+    <div class="chat-card__preview" *ngIf="pendingPreviews.length">
+      <div
+        class="chat-card__preview-item"
+        *ngFor="let src of pendingPreviews; let i = index">
+        <img [src]="src" alt="Vista previa imagen {{ i + 1 }}" />
+        <button
+          type="button"
+          class="chat-card__preview-remove"
+          (click)="removePending(i)"
+          aria-label="Quitar imagen">
+          ×
+        </button>
       </div>
-      <button
-        class="chat-card__send"
-        type="submit"
-        [disabled]="!newMessage.trim()">
-        Enviar
-      </button>
+    </div>
+
+    <!-- COMPOSER: barra tipo ChatGPT -->
+    <form
+      class="chat-card__composer"
+      (ngSubmit)="handleSubmit()"
+      novalidate
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+      [class.chat-card__composer--dragover]="dragOver">
+
+      <div class="chat-card__composer-inner">
+        <!-- Input file oculto -->
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          (change)="onFileSelected($event)" />
+
+        <!-- Botón + (círculo a la izquierda) -->
+        <button
+          type="button"
+          class="chat-card__attach"
+          (click)="fileInput.click()"
+          aria-label="Adjuntar imágenes (máx. 3)">
+          +
+        </button>
+
+        <label class="visually-hidden" for="chat-message">
+          Escribe tu mensaje
+        </label>
+
+        <!-- Campo de texto -->
+        <div class="chat-card__input">
+          <input
+            id="chat-message"
+            name="message"
+            type="text"
+            [(ngModel)]="newMessage"
+            placeholder="Escribe un mensaje..."
+            autocomplete="off"
+            aria-label="Mensaje a enviar" />
+        </div>
+
+        <!-- Botón enviar (círculo verde a la derecha) -->
+        <button
+          class="chat-card__send"
+          type="submit"
+          [disabled]="(!newMessage.trim() && !pendingPreviews.length) || isSending">
+          <span class="chat-card__send-icon">
+            {{ isSending ? '…' : '➤' }}
+          </span>
+        </button>
+      </div>
     </form>
   </section>
 </main>
 
-<app-barra-inferior></app-barra-inferior>
+<app-barra-inferior
+  (toggleSideBar)="toggleSidebar()"
+  (collapsedChange)="onBottomBarCollapsed($event)">
+</app-barra-inferior>

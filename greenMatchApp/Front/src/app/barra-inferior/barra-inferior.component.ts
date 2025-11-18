@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener } from '@angular/core';
+import { Component, HostBinding, Output, EventEmitter } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -9,40 +9,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./barra-inferior.component.scss']
 })
 export class BarraInferiorComponent {
-  @HostBinding('class.barra-inferior--hidden')
-  isHidden = false;
+  // Estado de barra colapsada (solo se ve el “tirador”)
+  @HostBinding('class.barra-inferior--collapsed')
+  isCollapsed = false;
 
-  private lastScrollY = 0;
-  private readonly deltaThreshold = 6;
-  private readonly hasDom = typeof window !== 'undefined' && typeof document !== 'undefined';
+  // Por si el padre (chat) quiere reaccionar a este estado
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
-  @HostListener('window:scroll')
-  handleScroll(): void {
-    if (!this.hasDom) {
-      return;
-    }
-    const current = window.scrollY || 0;
-    const delta = current - this.lastScrollY;
-
-    if (current < 60) {
-      this.isHidden = false;
-      this.lastScrollY = current;
-      return;
-    }
-
-    if (delta > this.deltaThreshold) {
-      this.isHidden = true;
-    } else if (delta < -this.deltaThreshold) {
-      this.isHidden = false;
-    }
-
-    const nearBottom =
-      window.innerHeight + current >= document.body.offsetHeight - 96;
-    if (nearBottom) {
-      this.isHidden = false;
-    }
-
-    this.lastScrollY = current;
+  toggleCollapsed(): void {
+    this.isCollapsed = !this.isCollapsed;
+    this.collapsedChange.emit(this.isCollapsed);
   }
-
 }
