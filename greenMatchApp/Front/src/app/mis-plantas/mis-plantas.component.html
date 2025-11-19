@@ -1,124 +1,350 @@
 <app-barra-superior></app-barra-superior>
-<div class="top-gap"></div>
 
-<main class="mis-plantas-page">
-  <div class="container">
+
+<div class="h-4 w-full bg-[#f3f7eb]"></div>
+
+<main class="min-h-[calc(100vh-56px-88px)] bg-[#f3f7eb] flex justify-center px-3 sm:px-4 py-4">
+  <div class="w-full max-w-5xl">
+
     <!-- Header -->
-    <div class="header-row">
-      <h1>Mis plantas</h1>
-      <button class="btn-primary" (click)="openCreate()">+ Agregar planta</button>
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-xl sm:text-2xl font-semibold text-[#151e08] tracking-tight">
+        Mis plantas
+      </h1>
+
+      <button
+        type="button"
+        (click)="openCreate()"
+        class="inline-flex items-center gap-1.5 rounded-2xl border border-[rgba(149,163,116,0.6)]
+               bg-[#aab382] px-3.5 py-2 text-xs sm:text-sm font-semibold tracking-[0.16em]
+               text-[#fffff0] uppercase shadow-[0_10px_24px_rgba(135,159,89,0.35)]
+               hover:brightness-105 hover:shadow-[0_14px_32px_rgba(135,159,89,0.4)]
+               active:translate-y-px transition"
+      >
+        <span class="text-base leading-none">+</span>
+        Agregar planta
+      </button>
     </div>
 
     <!-- Loading -->
     <ng-container *ngIf="loading">
-      <div class="mp-grid">
-        <div class="mp-card skeleton" *ngFor="let i of [1,2,3,4,5,6]"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div
+          *ngFor="let i of [1,2,3,4,5,6]"
+          class="h-72 rounded-3xl border border-[#e1e6c9]
+                 bg-[linear-gradient(90deg,#eef1e6,#f5f7ef,#eef1e6)]
+                 bg-[length:200%_100%] animate-[shimmer_1.1s_infinite]"
+        ></div>
       </div>
     </ng-container>
 
     <!-- Empty -->
-    <ng-container *ngIf="!loading && (!plantas || plantas.length===0)">
-      <div class="empty-state">
-        <img src="assets/logo-verde.png" alt="Sin plantas" class="empty-image">
-        <p class="empty-text">No tienes plantas guardadas</p>
-        <p class="empty-hint">Agrega tu primera planta para comenzar 🌱</p>
+    <ng-container *ngIf="!loading && (!plantas || plantas.length === 0)">
+      <div class="flex flex-col items-center text-center py-10 text-[#52510b]">
+        <img
+          src="assets/logo-verde.png"
+          alt="Sin plantas"
+          class="w-24 mb-4 opacity-85"
+        />
+        <p class="text-lg font-extrabold text-[#151e08] mb-1">
+          No tienes plantas guardadas,  
+        </p>
+        <p class="text-sm text-[#99920b]">
+        Si ya conoces el nombre de tu planta, agrégala manualmente y luego genera su plan de cuidado.
+        Si no, identifícala con nuestro chat y pídele el plan.🌱
+        </p>
       </div>
     </ng-container>
 
     <!-- Grid -->
-<section *ngIf="!loading && plantas?.length" class="mp-grid">
-  <article class="mp-card" *ngFor="let p of plantas">
-    <!-- Toolbar superior: icono archivar (opcional) -->
-    <div class="mp-toolbar">
-      <button class="btn-icon" (click)="archive(p)" title="Archivar" aria-label="Archivar">
-        <!-- Ícono minimal (SVG) -->
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 7h18M6 7l1 14h10l1-14M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-        </svg>
+    <section
+      *ngIf="!loading && plantas?.length"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
+    >
+      <article
+        *ngFor="let p of plantas"
+        class="relative flex flex-col rounded-[22px] border border-[rgba(34,54,24,0.14)]
+               bg-[rgba(255,255,255,0.62)] backdrop-blur-[10px] saturate-[1.2]
+               shadow-[0_14px_40px_rgba(20,24,10,0.06)]
+               transition-transform duration-150 hover:-translate-y-0.5
+               hover:shadow-[0_18px_48px_rgba(20,24,10,0.12)]
+               hover:border-[rgba(34,54,24,0.22)]"
+      >
+        <!-- Toolbar superior: icono archivar (basura) -->
+        <div class="absolute top-2 right-2 z-10">
+          <button
+            type="button"
+            title="Archivar"
+            aria-label="Archivar"
+            (click)="archive(p)"
+            class="inline-grid place-items-center w-8 h-8 rounded-full
+                   bg-[rgba(255,255,255,0.7)]
+                   border border-[rgba(34,54,24,0.22)]
+                   text-[#6b7a42] shadow-[0_6px_16px_rgba(0,0,0,0.12)]
+                   hover:shadow-[0_10px_22px_rgba(0,0,0,0.16)]
+                   hover:border-[rgba(34,54,24,0.32)]
+                   active:translate-y-px transition"
+          >
+            <!-- icono basurita -->
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 7h16" stroke-linecap="round" />
+              <path d="M10 11v6" stroke-linecap="round" />
+              <path d="M14 11v6" stroke-linecap="round" />
+              <path
+                d="M6 7l1 11a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-11M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Imagen -->
+        <div class="relative aspect-[16/10] overflow-hidden bg-gradient-to-b from-[#edf3e3] to-[#e9f0df]">
+          <img
+            src="assets/plant-placeholder.jpg"
+            [alt]="'Foto de ' + p.common_name"
+            loading="lazy"
+            class="w-full h-full object-cover scale-[1.02] saturate-[1.05] contrast-[1.03]"
+          />
+          <span
+            class="absolute left-2 top-2 rounded-full border border-[#dfe6c8]
+                   bg-[rgba(255,255,255,0.78)] backdrop-blur-[6px]
+                   px-2 py-0.5 text-[0.7rem] font-semibold text-[#24310e]"
+            [ngClass]="{
+              'bg-[rgba(198,232,255,0.8)] text-[#0b2a4a] ': p.light === 'baja',
+              'bg-[rgba(223,241,187,0.85)] text-[#24310e]': p.light === 'media',
+              'bg-[rgba(255,232,180,0.85)] text-[#4a330b]': p.light === 'alta',
+              'bg-[rgba(213,206,247,0.85)] text-[#201b4a]': p.light === 'indirecta'
+            }"
+            
+          >
+            {{ p.light || "—" }}
+          </span>
+        </div>
+
+        <!-- Contenido -->
+        <div class="px-3.5 pt-2.5 pb-1.5">
+          <h3 class="m-0 text-[#1b2a0f] font-extrabold tracking-tight text-[1rem] sm:text-[1.05rem]">
+            {{ p.common_name }}
+            <span *ngIf="p.nickname" class="text-[#7d874a] font-semibold ml-1">· {{ p.nickname }}</span>
+          </h3>
+
+          <div class="flex flex-wrap gap-1 mt-1.5 mb-1">
+            <span
+              *ngIf="p.location"
+              class="inline-flex items-center gap-1 rounded-full border border-[#dde0b1]
+                     bg-[#eef0cf] px-2 py-0.5 text-[0.78rem] font-semibold text-[#4e5a2b]"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-[#87995b] inline-block"></span>
+              {{ p.location }}
+            </span>
+
+            <span
+              class="inline-flex items-center gap-1 rounded-full border border-[#e8d9b2]
+                     bg-[#f0e7cf] px-2 py-0.5 text-[0.78rem] font-semibold text-[#7a5a00]"
+            >
+              {{ p.source }}
+            </span>
+          </div>
+
+          <p
+            *ngIf="p.notes"
+            class="text-[0.82rem] leading-snug text-[#7d874a] mb-1"
+          >
+            {{ p.notes }}
+          </p>
+
+          <div class="flex items-center gap-1.5 text-[0.8rem] text-[#9aa05c]">
+            <span>{{ p.created_at | date: "shortDate" }}</span>
+            <span class="opacity-60">•</span>
+            <span class="capitalize">{{ p.status }}</span>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <footer class="grid grid-cols-2 gap-1.5 px-3.5 pb-3">
+          <button
+            type="button"
+            (click)="openDetail(p)"
+            class="inline-flex items-center justify-center rounded-full
+                   bg-gradient-to-b from-[#5a8f47] to-[#4a7f3b]
+                   text-xs font-semibold text-white tracking-[0.12em] uppercase
+                   border border-[#466f36]
+                   shadow-[0_8px_20px_rgba(74,127,59,0.22)]
+                   hover:shadow-[0_12px_26px_rgba(74,127,59,0.3)]
+                   active:translate-y-px px-3 py-2 transition"
+          >
+            Ver Plan
+          </button>
+
+          <button
+            type="button"
+            (click)="openEdit(p)"
+            class="inline-flex items-center justify-center rounded-full
+                   border border-[rgba(74,127,59,0.4)]
+                   bg-[rgba(90,143,71,0.12)]
+                   text-xs font-semibold text-[#4a7f3b] tracking-[0.12em] uppercase
+                   backdrop-blur-[6px]
+                   hover:bg-[rgba(90,143,71,0.18)]
+                   hover:shadow-[0_10px_20px_rgba(74,127,59,0.16)]
+                   active:translate-y-px px-3 py-2 transition"
+          >
+            Editar
+          </button>
+        </footer>
+      </article>
+    </section>
+  </div>
+</main>
+
+<!-- Modal editar / crear -->
+<div
+  *ngIf="formOpen"
+  class="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(10,13,9,0.45)] backdrop-blur-[2px]"
+  (click)="closeForm()"
+>
+  <section
+    class="w-full max-w-md mx-3 rounded-2xl border border-[#e4e5c7] bg-[#fffff6]
+           shadow-[0_24px_60px_rgba(0,0,0,0.25)] flex flex-col"
+    (click)="$event.stopPropagation()"
+    aria-label="Formulario planta"
+  >
+    <header class="flex items-center justify-between px-4 py-3 border-b border-[#e4e5c7]">
+      <h2 class="m-0 text-[1.05rem] font-semibold text-[#151e08]">
+        {{ editing ? "Editar planta" : "Agregar planta" }}
+      </h2>
+      <button
+        type="button"
+        (click)="closeForm()"
+        aria-label="Cerrar"
+        class="text-lg leading-none text-[#405000] hover:text-[#202800] px-2"
+      >
+        ×
       </button>
-    </div>
+    </header>
 
-    <!-- Imagen -->
-    <div class="mp-media">
-      <img
-        src="assets/plant-placeholder.jpg"
-        alt="Foto de {{ p.common_name }}"
-        loading="lazy" />
-      <span class="mp-badge" [ngClass]="{
-        'baja': p.light==='baja',
-        'media': p.light==='media',
-        'alta': p.light==='alta',
-        'indirecta': p.light==='indirecta'
-      }">{{ p.light || '—' }}</span>
-    </div>
+    <form
+      class="flex flex-col gap-2.5 px-4 py-4 text-sm"
+      (ngSubmit)="saveForm()"
+    >
+      <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
+        Nombre común *
+        <input
+          [(ngModel)]="form.common_name"
+          name="common_name"
+          required
+          placeholder="Ej: Monstera"
+          class="rounded-lg border border-[rgba(21,30,8,0.2)] px-3 py-2 text-sm
+                 bg-white focus:outline-none focus:border-[rgba(49,80,0,0.5)]
+                 focus:shadow-[0_0_0_2px_rgba(80,120,0,0.18)]"
+        />
+      </label>
 
-    <!-- Contenido -->
-    <div class="mp-body">
-      <h3 class="mp-title">
-        {{ p.common_name }}
-        <span class="mp-nickname" *ngIf="p.nickname">· {{ p.nickname }}</span>
-      </h3>
+      <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
+        Apodo
+        <input
+          [(ngModel)]="form.nickname"
+          name="nickname"
+          placeholder="Ej: La Moni"
+          class="rounded-lg border border-[rgba(21,30,8,0.2)] px-3 py-2 text-sm
+                 bg-white focus:outline-none focus:border-[rgba(49,80,0,0.5)]
+                 focus:shadow-[0_0_0_2px_rgba(80,120,0,0.18)]"
+        />
+      </label>
 
-      <div class="mp-chips">
-        <span class="chip" *ngIf="p.location"><i class="dot"></i>{{ p.location }}</span>
-        <span class="chip chip-muted">{{ p.source }}</span>
+      <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
+        Ubicación
+        <input
+          [(ngModel)]="form.location"
+          name="location"
+          placeholder="sala, balcón..."
+          class="rounded-lg border border-[rgba(21,30,8,0.2)] px-3 py-2 text-sm
+                 bg-white focus:outline-none focus:border-[rgba(49,80,0,0.5)]
+                 focus:shadow-[0_0_0_2px_rgba(80,120,0,0.18)]"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
+        Luz
+        <select
+          [(ngModel)]="form.light"
+          name="light"
+          class="rounded-lg border border-[rgba(21,30,8,0.2)] px-3 py-2 text-sm
+                 bg-white focus:outline-none focus:border-[rgba(49,80,0,0.5)]
+                 focus:shadow-[0_0_0_2px_rgba(80,120,0,0.18)]"
+        >
+          <option value="">(sin especificar)</option>
+          <option value="baja">baja</option>
+          <option value="media">media</option>
+          <option value="alta">alta</option>
+          <option value="indirecta">indirecta</option>
+        </select>
+      </label>
+
+      <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
+        Humedad
+        <select
+          [(ngModel)]="form.humidity"
+          name="humidity"
+          class="rounded-lg border border-[rgba(21,30,8,0.2)] px-3 py-2 text-sm
+                 bg-white focus:outline-none focus:border-[rgba(49,80,0,0.5)]
+                 focus:shadow-[0_0_0_2px_rgba(80,120,0,0.18)]"
+
+        >
+          <option value="">(sin especificar)</option>
+          <option value="baja">baja</option>
+          <option value="media">media</option>
+          <option value="alta">alta</option>
+        </select>
+      </label>
+
+      <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
+        Notas
+        <textarea
+          [(ngModel)]="form.notes"
+          name="notes"
+          rows="3"
+          placeholder="algo que quieras recordar..."
+          class="rounded-lg border border-[rgba(21,30,8,0.2)] px-3 py-2 text-sm
+                 bg-white resize-none focus:outline-none
+                 focus:border-[rgba(49,80,0,0.5)]
+                 focus:shadow-[0_0_0_2px_rgba(80,120,0,0.18)]"
+        ></textarea>
+      </label>
+
+      <div class="mt-2 flex justify-end gap-2 pt-2 border-t border-[#eef0cf]">
+        <button
+          type="button"
+          (click)="closeForm()"
+          class="inline-flex items-center justify-center rounded-xl
+                 bg-[#f1f3e0] text-[#151e08] text-xs font-semibold px-3.5 py-2
+                 hover:shadow-[0_6px_16px_rgba(0,0,0,0.08)]
+                 active:translate-y-px transition"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl
+                 bg-[#aab382] text-[#fffff0] text-xs font-semibold px-3.5 py-2
+                 shadow-[0_10px_24px_rgba(135,159,89,0.35)]
+                 hover:brightness-105 hover:shadow-[0_14px_30px_rgba(135,159,89,0.42)]
+                 active:translate-y-px transition"
+        >
+          {{ editing ? "Guardar" : "Agregar" }}
+        </button>
       </div>
+    </form>
+  </section>
+</div>
 
-      <p class="mp-notes" *ngIf="p.notes">{{ p.notes }}</p>
+<div class="h-4 w-full bg-[#f3f7eb]"></div><app-barra-inferior></app-barra-inferior>
 
-      <div class="mp-meta">
-        <span>{{ p.created_at | date:'shortDate' }}</span>
-        <span class="sep">•</span>
-        <span class="status">{{ p.status }}</span>
-      </div>
-    </div>
-
-    <!-- Acciones (solo 2) -->
-    <footer class="mp-actions">
-      <button class="btn-tonic" (click)="openDetail(p)">Ver detalle</button>
-      <button class="btn-outline" (click)="openEdit(p)">Editar</button>
-      <!-- OJO: “Crear plan” ya NO va aquí -->
-    </footer>
-  </article>
-</section>
-
-
-<!-- Modal/Panel (tu lógica TS actual) -->
-<div class="modal-backdrop" *ngIf="formOpen" (click)="closeForm()"></div>
-<section class="modal" *ngIf="formOpen" aria-label="Formulario planta">
-  <header class="modal-header">
-    <h2>{{ editing ? 'Editar planta' : 'Agregar planta' }}</h2>
-    <button class="close" (click)="closeForm()" aria-label="Cerrar">×</button>
-  </header>
-
-  <form class="modal-body" (ngSubmit)="saveForm()">
-    <label>Nombre común *</label>
-    <input [(ngModel)]="form.common_name" name="common_name" required placeholder="Ej: Monstera" />
-
-    <label>Apodo</label>
-    <input [(ngModel)]="form.nickname" name="nickname" placeholder="Ej: La Moni" />
-
-    <label>Ubicación</label>
-    <input [(ngModel)]="form.location" name="location" placeholder="sala, balcón..." />
-
-    <label>Luz</label>
-    <select [(ngModel)]="form.light" name="light">
-      <option value="">(sin especificar)</option>
-      <option value="baja">baja</option>
-      <option value="media">media</option>
-      <option value="alta">alta</option>
-      <option value="indirecta">indirecta</option>
-    </select>
-
-    <label>Notas</label>
-    <textarea [(ngModel)]="form.notes" name="notes" rows="3" placeholder="algo que quieras recordar..."></textarea>
-
-    <div class="modal-actions">
-      <button type="button" class="btn" (click)="closeForm()">Cancelar</button>
-      <button type="submit" class="btn-primary">{{ editing ? 'Guardar' : 'Agregar' }}</button>
-    </div>
-  </form>
-</section>
-
-<div class="bottom-gap"></div>
-<app-barra-inferior></app-barra-inferior>
+<style>
+@keyframes shimmer {
+  0% { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+</style>

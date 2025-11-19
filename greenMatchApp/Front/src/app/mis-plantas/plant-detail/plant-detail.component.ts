@@ -13,7 +13,7 @@ type CarePlan = {
   environment_json?: Record<string, any> | null;
   plan_json: {
     riego: { frecuencia: string; detalle: string };
-    luz:   { tipo: string; detalle: string };
+    luz: { tipo: string; detalle: string };
     temperatura: string;
     humedad: string;
     fertilizacion: { frecuencia: string; detalle: string };
@@ -27,8 +27,7 @@ type CarePlan = {
   selector: 'app-plant-detail',
   standalone: true,
   imports: [CommonModule, BarraSuperiorComponent, BarraInferiorComponent],
-  templateUrl: './plant-detail.component.html',
-  styleUrls: ['./plant-detail.component.scss']
+  templateUrl: './plant-detail.component.html'
 })
 export class PlantDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -44,29 +43,46 @@ export class PlantDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) { this.router.navigate(['/mis-plantas']); return; }
+    if (!id) {
+      this.router.navigate(['/mis-plantas']);
+      return;
+    }
 
-    // Carga planta
     this.svc.get(id).subscribe({
-      next: (p) => { this.plant = p; this.loadingPlant = false; },
-      error: () => { this.error = 'No se encontró la planta'; this.loadingPlant = false; }
+      next: p => {
+        this.plant = p;
+        this.loadingPlant = false;
+      },
+      error: () => {
+        this.error = 'No se encontró la planta';
+        this.loadingPlant = false;
+      }
     });
 
-    // Carga último CarePlan (puede ser null)
     this.svc.getCarePlan(id).subscribe({
-      next: (cp) => { this.plan = cp; this.loadingPlan = false; },
-      error: () => { this.plan = null; this.loadingPlan = false; }
+      next: cp => {
+        this.plan = cp;
+        this.loadingPlan = false;
+      },
+      error: () => {
+        this.plan = null;
+        this.loadingPlan = false;
+      }
     });
   }
 
-  back() { this.router.navigate(['/mis-plantas']); }
+  back() {
+    this.router.navigate(['/mis-plantas']);
+  }
 
   crearPlan() {
     if (!this.plant) return;
-    const luzLoc = [this.plant.light, this.plant.location].filter(Boolean).join(' / ');
+    const luzLoc = [this.plant.light, this.plant.location, this.plant.humidity]
+      .filter(Boolean)
+      .join(' / ');
     const prompt = luzLoc
-      ? `Dame plan para ${this.plant.common_name} en ${luzLoc}`
-      : `Dame plan para ${this.plant.common_name}`;
+      ? `Generame por favor el plan de cuidado para ${this.plant.common_name} con condiciones de luz, ubicacion y humedad: ${luzLoc}`
+      : `Generame por favor el plan de cuidado para ${this.plant.common_name}`;
     this.router.navigate(['/chat'], { queryParams: { prompt } });
   }
 }

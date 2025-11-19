@@ -1,59 +1,125 @@
-<footer class="barra-inferior" role="navigation" aria-label="Navegacion inferior">
-  <!-- Tirador para colapsar / expandir -->
+<!-- NAV LATERAL DERECHO (vertical, tipo pill con ranura e íconos) -->
+<footer class="pointer-events-none" aria-label="Navegación lateral">
+  <!-- Overlay para cerrar al hacer click fuera -->
   <button
-  type="button"
-  class="barra-inferior__handle"
-  (click)="toggleCollapsed()"
-  [attr.aria-expanded]="!isCollapsed">
-  <span class="visually-hidden">
-    {{ isCollapsed ? 'Mostrar navegación inferior' : 'Ocultar navegación inferior' }}
-  </span>
-</button>
+    *ngIf="!isCollapsed"
+    type="button"
+    aria-label="Ocultar navegación lateral"
+    class="fixed inset-0 z-30 bg-transparent pointer-events-auto"
+    (click)="toggleCollapsed()"
+  ></button>
 
+  <!-- Contenedor fijo a la derecha, centrado vertical -->
+  <div
+    class="fixed inset-y-0 right-0 z-40 flex items-center justify-end pr-0 pointer-events-none"
+  >
+    <div
+      class="relative flex flex-row-reverse items-center gap-2 pointer-events-auto"
+    >
+      <!-- Ranura pegada al borde derecho, siempre visible cuando está colapsado -->
+      <button
+        *ngIf="isCollapsed"
+        type="button"
+        (click)="toggleCollapsed()"
+        aria-label="Mostrar navegación lateral"
+        class="flex h-24 w-[14px] items-center justify-center rounded-l-full bg-[rgba(7,12,9,0.98)] border border-r-0 border-[rgba(24,35,28,0.96)] shadow-[0_0_16px_rgba(0,0,0,0.9)] hover:bg-[rgba(10,17,13,1)] hover:border-[rgba(36,49,40,0.98)] transition-colors duration-200 ease-out cursor-pointer"
+      >
+        <span
+          class="h-14 w-[3px] rounded-full bg-[rgba(156,163,175,0.9)]"
+        ></span>
+      </button>
 
-  <!-- Nav principal -->
-  <nav class="barra-inferior__nav">
-    <a
-      class="barra-inferior__item"
-      routerLink="/chat"
-      routerLinkActive="barra-inferior__item--active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      #chatLink="routerLinkActive"
-      [attr.aria-current]="chatLink.isActive ? 'page' : null">
-      <img class="barra-inferior__icon" src="assets/chat-cream.png" alt="Chat" />
-      <span class="barra-inferior__label">Chat</span>
-    </a>
+      <!-- Barra vertical tipo pill, solo íconos -->
+      <nav
+        aria-label="Navegación lateral"
+        class="relative mr-2 flex h-[360px] w-[70px] flex-col items-center justify-between rounded-[999px] border border-[rgba(24,35,28,0.96)] bg-[rgba(7,12,9,0.98)] px-3 py-4 shadow-[0_18px_38px_rgba(0,0,0,0.9)] backdrop-blur-[18px] transform-gpu origin-right transition duration-200 ease-out" 
+        [class.translate-x-full]="isCollapsed"
+        [class.opacity-0]="isCollapsed"
+        [class.scale-95]="isCollapsed"
+        [class.pointer-events-none]="isCollapsed"
+        [class.translate-x-0]="!isCollapsed"
+        [class.opacity-100]="!isCollapsed"
+        [class.scale-100]="!isCollapsed"
+        [class.pointer-events-auto]="!isCollapsed"
+      >
+        <!-- Chat -->
+        <a
+          routerLink="/chat"
+          #chatLink="routerLinkActive"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="border-[rgba(52,211,153,0.9)] bg-[rgba(22,163,74,0.18)]"
+          class="group relative flex flex-col items-center justify-center gap-1 h-14 w-14 rounded-full border bg-[rgba(10,17,13,0.98)] border-[rgba(35,46,39,0.95)] hover:bg-[rgba(14,22,18,1)] hover:border-[rgba(55,65,54,1)] transition-colors duration-150 ease-out"
+          aria-label="Chat"
+        >
+          <img
+            src="assets/chat-cream.png"
+            alt="Chat"
+            class="h-6 w-6 object-contain"
+          />
+          <!-- Indicador activo tipo barra verde (como el nav horizontal) -->
+          <span
+            *ngIf="chatLink.isActive"
+            class="block h-[3px] w-8 rounded-full bg-[#7dd87d]"
+          ></span>
+        </a>
 
-    <a
-      class="barra-inferior__item"
-      routerLink="/mis-plantas"
-      routerLinkActive="barra-inferior__item--active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      #plantsLink="routerLinkActive"
-      [attr.aria-current]="plantsLink.isActive ? 'page' : null">
-      <img class="barra-inferior__icon" src="assets/logo-cream.png" alt="Mis plantas" />
-      <span class="barra-inferior__label">Mis plantas</span>
-    </a>
+        <!-- Mis plantas -->
+        <a
+          routerLink="/mis-plantas"
+          #plantsLink="routerLinkActive"
+          routerLinkActive="border-[rgba(52,211,153,0.9)] bg-[rgba(22,163,74,0.18)]"
+          class="group relative flex flex-col items-center justify-center gap-1 h-14 w-14 rounded-full border bg-[rgba(10,17,13,0.98)] border-[rgba(35,46,39,0.95)] hover:bg-[rgba(14,22,18,1)] hover:border-[rgba(55,65,54,1)] transition-colors duration-150 ease-out"
+          aria-label="Mis plantas"
+        >
+          <img
+            src="assets/logo-cream.png"
+            alt="Mis plantas"
+            class="h-6 w-6 object-contain"
+          />
+          <span
+            *ngIf="plantsLink.isActive"
+            class="block h-[3px] w-8 rounded-full bg-[#7dd87d]"
+          ></span>
+        </a>
 
-    <a
-      class="barra-inferior__item"
-      routerLink="/mi-horario"
-      routerLinkActive="barra-inferior__item--active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      #scheduleLink="routerLinkActive"
-      [attr.aria-current]="scheduleLink.isActive ? 'page' : null">
-      <img class="barra-inferior__icon" src="assets/calendar-cream.png" alt="Mi horario" />
-      <span class="barra-inferior__label">Mi horario</span>
-    </a>
+        <!-- Mi horario -->
+        <a
+          routerLink="/mi-horario"
+          #scheduleLink="routerLinkActive"
+          routerLinkActive="border-[rgba(52,211,153,0.9)] bg-[rgba(22,163,74,0.18)]"
+          class="group relative flex flex-col items-center justify-center gap-1 h-14 w-14 rounded-full border bg-[rgba(10,17,13,0.98)] border-[rgba(35,46,39,0.95)] hover:bg-[rgba(14,22,18,1)] hover:border-[rgba(55,65,54,1)] transition-colors duration-150 ease-out"
+          aria-label="Mi horario"
+        >
+          <img
+            src="assets/calendar-cream.png"
+            alt="Mi horario"
+            class="h-6 w-6 object-contain"
+          />
+          <span
+            *ngIf="scheduleLink.isActive"
+            class="block h-[3px] w-8 rounded-full bg-[#7dd87d]"
+          ></span>
+        </a>
 
-    <a
-      class="barra-inferior__item"
-      routerLink="/wishlist"
-      routerLinkActive="barra-inferior__item--active"
-      #wantsLink="routerLinkActive"
-      [attr.aria-current]="wantsLink.isActive ? 'page' : null">
-      <img class="barra-inferior__icon" src="assets/heart-cream.png" alt="wishlist" />
-      <span class="barra-inferior__label">Wishlist</span>
-    </a>
-  </nav>
+        <!-- Wishlist -->
+        <a
+          routerLink="/wishlist"
+          #wantsLink="routerLinkActive"
+          routerLinkActive="border-[rgba(52,211,153,0.9)] bg-[rgba(22,163,74,0.18)]"
+          class="group relative flex flex-col items-center justify-center gap-1 h-14 w-14 rounded-full border bg-[rgba(10,17,13,0.98)] border-[rgba(35,46,39,0.95)] hover:bg-[rgba(14,22,18,1)] hover:border-[rgba(55,65,54,1)] transition-colors duration-150 ease-out"
+          aria-label="Wishlist"
+        >
+          <img
+            src="assets/heart-cream.png"
+            alt="Wishlist"
+            class="h-6 w-6 object-contain"
+          />
+          <span
+            *ngIf="wantsLink.isActive"
+            class="block h-[3px] w-8 rounded-full bg-[#7dd87d]"
+          ></span>
+        </a>
+      </nav>
+    </div>
+  </div>
 </footer>

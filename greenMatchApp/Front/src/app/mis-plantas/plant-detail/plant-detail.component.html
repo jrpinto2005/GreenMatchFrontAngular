@@ -1,124 +1,309 @@
 <app-barra-superior></app-barra-superior>
 
-<main class="detail">
-  <div class="wrap glass">
+<div class="min-h-screen flex flex-col bg-[linear-gradient(140deg,#f7f9ef,#ffffee_45%,#f2f6e6)]">
+  <main class="flex-1 flex justify-center pt-16 pb-24 px-4 md:px-6 lg:px-8 gm-scroll">
+    <div
+      class="w-full max-w-[980px] overflow-hidden rounded-[22px] border border-[#e4e5c7] bg-white/70 shadow-[0_14px_44px_rgba(20,24,10,0.14)] backdrop-blur-[10px]"
+    >
+      <figure class="relative m-0 aspect-[16/6] overflow-hidden border-b border-[#e4e5c7]">
+        <img
+          src="assets/plant-placeholder.jpg"
+          alt="Planta"
+          loading="lazy"
+          class="h-full w-full object-cover saturate-[1.05]"
+        />
+        <figcaption
+          *ngIf="plant?.light"
+          class="absolute bottom-3 left-3 inline-flex items-center rounded-full border border-[#dde0b1] bg-[rgba(238,240,207,0.88)] px-2.5 py-0.5 text-xs font-semibold text-[#52510b] backdrop-blur-[4px]"
+        >
+          {{ plant.light }}
+        </figcaption>
+      </figure>
 
-    <!-- HERO (imagen estática por ahora) -->
-    <figure class="hero">
-      <img src="assets/plant-placeholder.jpg" alt="Planta" loading="lazy" />
-      <figcaption class="hero-badge" *ngIf="plant?.light">{{ plant.light }}</figcaption>
-    </figure>
+      <div class="flex flex-col">
+        <ng-container *ngIf="!loadingPlant && plant; else headerSkeleton">
+          <header class="flex items-center justify-between gap-3 px-5 py-4 text-[#151e08]">
+            <div class="flex flex-col gap-1">
+              <h1 class="m-0 text-[1.5rem] font-extrabold tracking-[0.02em] md:text-[1.75rem]">
+                {{ plant.common_name }}
+                <small *ngIf="plant.nickname" class="ml-1 text-base font-semibold text-[#77763a]">
+                  · {{ plant.nickname }}
+                </small>
+              </h1>
 
-    <!-- Header -->
-    <ng-container *ngIf="!loadingPlant && plant; else headerSkeleton">
-      <header class="header">
-        <div class="title-block">
-          <h1 class="title">
-            {{ plant.common_name }}
-            <small *ngIf="plant.nickname" class="nickname">· {{ plant.nickname }}</small>
-          </h1>
+              <div class="flex flex-wrap gap-1.5">
+                <span
+                  *ngIf="plant.location"
+                  class="inline-flex items-center rounded-full border border-[#dde0b1] bg-[#eef0cf] px-2 py-0.5 text-[0.8rem] font-semibold text-[#52510b]"
+                >
+                  {{ plant.location }}
+                </span>
+                <span
+                  class="inline-flex items-center rounded-full border border-[#e8d9b2] bg-[#f0e7cf] px-2 py-0.5 text-[0.8rem] font-semibold text-[#7a5a00]"
+                >
+                  {{ plant.source }}
+                </span>
+              </div>
+            </div>
 
-          <div class="chips">
-            <span class="chip" *ngIf="plant.location">{{ plant.location }}</span>
-            <span class="chip chip--muted">{{ plant.source }}</span>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-full border border-[rgba(74,127,59,0.35)] bg-[rgba(90,143,71,0.10)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#4a7f3b] backdrop-blur-[6px] transition duration-150 ease-out hover:-translate-y-[1px] hover:bg-[rgba(90,143,71,0.16)] hover:shadow-[0_10px_20px_rgba(74,127,59,0.12)]"
+                (click)="back()"
+              >
+                Volver
+              </button>
+
+              <button
+                *ngIf="!loadingPlan && !plan"
+                type="button"
+                class="inline-flex items-center justify-center rounded-full border border-[#3f6e33] bg-gradient-to-b from-[#5a8f47] to-[#4a7f3b] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-[0_12px_26px_rgba(74,127,59,0.25)] transition duration-150 ease-out hover:-translate-y-[1px] hover:shadow-[0_16px_32px_rgba(74,127,59,0.32)]"
+                (click)="crearPlan()"
+              >
+                Crear plan
+              </button>
+            </div>
+          </header>
+        </ng-container>
+
+        <ng-template #headerSkeleton>
+          <div class="px-5 pt-4">
+            <div
+              class="mb-2 h-7 w-[60%] rounded-xl bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite]"
+            ></div>
+            <div
+              class="h-5 w-[35%] rounded-xl bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite]"
+            ></div>
           </div>
-        </div>
+        </ng-template>
 
-        <div class="header-actions">
-          <!-- Botón outline local basado en Bootstrap -->
-          <button class=" btn-back" (click)="back()">Volver</button>
+        <section
+          class="relative mt-1 px-4 pb-5 pt-2 text-[#151e08] sm:px-5"
+          aria-labelledby="careplan-title"
+        >
+          <div
+            class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(247,249,239,0.85),rgba(247,249,239,0.55)_60%,rgba(247,249,239,0))]"
+          ></div>
 
-          <!-- Mostrar “Crear plan” SOLO cuando ya cargó el plan y NO existe -->
-          <button
-            class="btn-cp"
+          <h2
+            id="careplan-title"
+            class="sticky top-0 z-10 mb-2 mt-1 bg-transparent text-base font-semibold tracking-[0.16em] text-[#52510b]"
+          >
+            PLAN DE CUIDADO
+          </h2>
+
+          <div
+            class="relative z-10 grid grid-cols-1 gap-3 pb-3 md:grid-cols-2"
+            *ngIf="loadingPlan"
+            aria-live="polite"
+          >
+            <div
+              class="h-[90px] rounded-[18px] bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite]"
+            ></div>
+            <div
+              class="h-[90px] rounded-[18px] bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite]"
+            ></div>
+            <div
+              class="h-[90px] rounded-[18px] bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite]"
+            ></div>
+            <div
+              class="h-[90px] rounded-[18px] bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite]"
+            ></div>
+            <div
+              class="h-[120px] rounded-[18px] bg-[linear-gradient(90deg,#eee,#f7f7f7,#eee)] bg-[length:200%_100%] animate-[shimmer_1.2s_infinite] md:col-span-2"
+            ></div>
+          </div>
+
+          <ng-container *ngIf="!loadingPlan && plan">
+            <div class="relative z-10 grid grid-cols-1 gap-3 pb-3 md:grid-cols-2">
+              <article
+                class="relative rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="riego-title"
+              >
+                <h4
+                  id="riego-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Riego
+                </h4>
+
+                <p
+                  class="mb-1 inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,#4a7f3b_35%,#e4e5c7_65%)] bg-[color-mix(in_oklab,#ffffff_75%,#f7f9ef)] px-2 py-0.5 text-[0.8rem] font-extrabold text-[#4a7f3b] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                >
+                  <span>•</span>
+                  {{ plan?.plan_json?.riego?.frecuencia || "—" }}
+                </p>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.riego?.detalle || "—" }}
+                </p>
+              </article>
+
+              <article
+                class="relative rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="luz-title"
+              >
+                <h4
+                  id="luz-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Luz
+                </h4>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.luz?.detalle || "—" }}
+                </p>
+              </article>
+
+              <article
+                class="relative rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="temp-title"
+              >
+                <h4
+                  id="temp-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Temperatura
+                </h4>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.temperatura || "—" }}
+                </p>
+              </article>
+
+              <article
+                class="relative rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="hum-title"
+              >
+                <h4
+                  id="hum-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Humedad
+                </h4>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.humedad || "—" }}
+                </p>
+              </article>
+
+              <article
+                class="relative rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="fert-title"
+              >
+                <h4
+                  id="fert-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Fertilización
+                </h4>
+
+                <p
+                  class="mb-1 inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,#4a7f3b_35%,#e4e5c7_65%)] bg-[color-mix(in_oklab,#ffffff_75%,#f7f9ef)] px-2 py-0.5 text-[0.8rem] font-extrabold text-[#4a7f3b] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                >
+                  <span>•</span>
+                  {{ plan?.plan_json?.fertilizacion?.frecuencia || "—" }}
+                </p>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.fertilizacion?.detalle || "—" }}
+                </p>
+              </article>
+
+              <article
+                class="relative rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="poda-title"
+              >
+                <h4
+                  id="poda-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Poda
+                </h4>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.poda || "—" }}
+                </p>
+              </article>
+
+              <article
+                class="relative md:col-span-2 rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="plagas-title"
+              >
+                <h4
+                  id="plagas-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Plagas
+                </h4>
+                <p class="m-0 text-[0.9rem] text-[#77763a]">
+                  {{ plan?.plan_json?.plagas || "—" }}
+                </p>
+              </article>
+
+              <article
+                *ngIf="plan?.plan_json?.alertas?.length"
+                class="relative md:col-span-2 rounded-[18px] border border-[color-mix(in_oklab,var(--gm-line)_85%,transparent)] bg-gradient-to-b from-white/70 to-white/55 p-3.5 shadow-[0_18px_44px_rgba(20,24,10,0.08)]"
+                aria-labelledby="alertas-title"
+              >
+                <h4
+                  id="alertas-title"
+                  class="mb-1 flex items-center gap-2 text-[0.95rem] font-extrabold tracking-[0.03em] text-[#52510b]"
+                >
+                  <span
+                    class="inline-block h-2.5 w-2.5 rounded-full bg-[radial-gradient(circle_at_40%_40%,#4a7f3b_0%,#8a7d18_100%)] shadow-[0_0_0_2px_rgba(74,127,59,0.10)]"
+                  ></span>
+                  Alertas
+                </h4>
+
+                <ul class="mt-1 grid gap-1.5 text-[0.9rem] text-[#52510b]">
+                  <li
+                    *ngFor="let a of (plan?.plan_json?.alertas || [])"
+                    class="inline-flex items-center gap-2 rounded-xl border border-[color-mix(in_oklab,#8a7d18_40%,#e4e5c7)] bg-gradient-to-b from-white/75 to-white/55 px-2.5 py-1 shadow-[0_6px_16px_rgba(0,0,0,0.04)]"
+                  >
+                    <span class="text-[0.95rem]">⚠</span>
+                    <span>{{ a }}</span>
+                  </li>
+                </ul>
+              </article>
+            </div>
+
+            <small class="relative z-10 mb-1 block px-1 text-[0.8rem] font-semibold text-[#77763a]">
+              Generado: {{ plan.created_at | date: "short" }}
+            </small>
+          </ng-container>
+
+          <div
+            class="relative z-10 mt-3 flex max-w-[560px] flex-col gap-1 rounded-2xl bg-transparent px-1"
             *ngIf="!loadingPlan && !plan"
-            (click)="crearPlan()">
-            Crear plan
-          </button>
-        </div>
-      </header>
-    </ng-container>
-
-    <ng-template #headerSkeleton>
-      <div class="skeleton title"></div>
-      <div class="skeleton chips"></div>
-    </ng-template>
-
-    <!-- Plan de cuidado (contenido principal) -->
-    <section class="careplan" aria-labelledby="careplan-title">
-      <h2 id="careplan-title" class="section-title">Plan de cuidado</h2>
-
-      <!-- Cargando plan -->
-      <div class="grid plan-grid" *ngIf="loadingPlan" aria-live="polite">
-        <div class="skeleton block"></div>
-        <div class="skeleton block"></div>
-        <div class="skeleton block"></div>
-        <div class="skeleton block"></div>
-        <div class="skeleton block wide"></div>
+          >
+            <p class="m-0 font-extrabold tracking-[0.02em] text-[#151e08]">
+              No hay plan de cuidado todavía.
+            </p>
+            <small class="text-[0.8rem] text-[#77763a]">
+              Genera uno con base en tu luz/ubicación actuales.
+            </small>
+          </div>
+        </section>
       </div>
+    </div>
+  </main>
 
-      <!-- Con plan -->
-      <ng-container *ngIf="!loadingPlan && plan">
-        <div class="grid plan-grid">
-          <article class="card glass-soft" aria-labelledby="riego-title">
-            <h4 id="riego-title">Riego</h4>
-            <p class="em">{{ plan.plan_json.riego.frecuencia || '—' }}</p>
-            <p>{{ plan.plan_json.riego.detalle || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft" aria-labelledby="luz-title">
-            <h4 id="luz-title">Luz</h4>
-            <p>{{ plan.plan_json.luz.detalle || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft" aria-labelledby="temp-title">
-            <h4 id="temp-title">Temperatura</h4>
-            <p>{{ plan.plan_json.temperatura || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft" aria-labelledby="hum-title">
-            <h4 id="hum-title">Humedad</h4>
-            <p>{{ plan.plan_json.humedad || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft" aria-labelledby="fert-title">
-            <h4 id="fert-title">Fertilización</h4>
-            <p class="em">{{ plan.plan_json.fertilizacion.frecuencia || '—' }}</p>
-            <p>{{ plan.plan_json.fertilizacion.detalle || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft" aria-labelledby="poda-title">
-            <h4 id="poda-title">Poda</h4>
-            <p>{{ plan.plan_json.poda || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft full" aria-labelledby="plagas-title">
-            <h4 id="plagas-title">Plagas</h4>
-            <p>{{ plan.plan_json.plagas || '—' }}</p>
-          </article>
-
-          <article class="card glass-soft full" *ngIf="plan.plan_json.alertas?.length" aria-labelledby="alertas-title">
-            <h4 id="alertas-title">Alertas</h4>
-            <ul class="alertas">
-              <li *ngFor="let a of plan.plan_json.alertas">{{ a }}</li>
-            </ul>
-          </article>
-        </div>
-
-        <small class="plan-meta">
-          Generado: {{ plan.created_at | date:'short' }}
-        </small>
-      </ng-container>
-
-      <!-- Sin plan -->
-      <div class="no-plan" *ngIf="!loadingPlan && !plan">
-        <div class="no-plan__text">
-          <p>No hay plan de cuidado todavía.</p>
-          <small>Genera uno con base en tu luz/ubicación actuales.</small>
-        </div>
-      </div>
-    </section>
-  </div>
-</main>
-
-<app-barra-inferior></app-barra-inferior>
+  <app-barra-inferior></app-barra-inferior>
+</div>

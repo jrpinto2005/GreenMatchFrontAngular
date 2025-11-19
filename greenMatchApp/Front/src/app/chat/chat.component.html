@@ -1,188 +1,274 @@
-<app-barra-superior (toggleSideBar)="toggleSidebar()"></app-barra-superior>
+<div class="flex flex-col flex-1 min-h-0 bg-[#10150f] text-[#e5e7eb]">
+  <!-- BARRA SUPERIOR (siempre fija dentro del host) -->
+  <app-barra-superior (toggleSideBar)="toggleSidebar()"></app-barra-superior>
 
-<!-- Overlay para mobile cuando el sidebar está abierto -->
-<div
-  class="sidebar-backdrop"
-  *ngIf="showSidebar"
-  (click)="toggleSidebar()">
-</div>
-
-<!-- Sidebar de conversaciones -->
-<aside class="sidebar" [class.sidebar--open]="showSidebar">
-  <header class="sidebar__header">
-    <button type="button" class="sidebar__new" (click)="newConversation()">
-      Nueva conversación
-    </button>
-
-    <div class="sidebar__title">
-      Chats
-    </div>
-  </header>
-
-  <section class="sidebar__body">
-    <ng-container *ngIf="pastConversations?.length; else noConversations">
-      <ul class="sidebar__list">
-        <li
-          *ngFor="let conv of pastConversations"
-          class="sidebar__item"
-          [class.sidebar__item--active]="conv.id === sessionId"
-          (click)="selectConversation(conv)">
-          <div class="sidebar__item-title">
-            {{ conv.title || ('Chat #' + conv.id) }}
-          </div>
-          <div class="sidebar__item-meta">
-            Última actividad:
-            {{ conv.last_activity_at | date: 'short' }}
-          </div>
-        </li>
-      </ul>
-    </ng-container>
-
-    <ng-template #noConversations>
-      <div class="sidebar__empty">
-        <p>No tienes conversaciones previas.</p>
-        <p>Empieza una nueva para verlas aquí.</p>
-      </div>
-    </ng-template>
-  </section>
-</aside>
-
-<main class="chat-page">
-  <section class="chat-card" aria-label="Conversación">
-    <!-- LISTA DE MENSAJES -->
+  <!-- LAYOUT CENTRAL: sidebar + chat -->
+  <div
+    class="flex flex-1 min-h-0 overflow-hidden transition-[padding-right] duration-200 ease-out"
+    [ngClass]="rightNavCollapsed ? 'pr-4' : 'pr-24'"
+  >
+    <!-- Backdrop sidebar (mobile) -->
     <div
-      class="chat-card__messages"
-      role="log"
-      aria-live="polite"
-      #messagesContainer>
-      <ng-container *ngIf="messages.length > 0; else emptyState">
-        <div
-          *ngFor="let msg of messages"
-          class="chat-card__message"
-          [class.chat-card__message--self]="msg.sender === 'user'"
-          role="listitem">
+      *ngIf="showSidebar"
+      class="fixed inset-0 z-30 bg-black/40 md:hidden"
+      (click)="toggleSidebar()"
+    ></div>
 
-          <!-- Imágenes del mensaje (si existen) -->
-          <div
-            class="chat-card__images"
-            *ngIf="msg.image_gcs_uris?.length">
-            <figure
-              class="chat-card__image-wrapper"
-              *ngFor="let img of msg.image_gcs_uris; let i = index">
-              <img
-                [src]="img"
-                [alt]="msg.sender === 'user'
-                  ? 'Imagen enviada por ti'
-                  : 'Imagen enviada por el asistente'"
-                loading="lazy" />
-            </figure>
-          </div>
-
-          <!-- Texto del mensaje (Markdown) -->
-          <div class="chat-card__message-body" *ngIf="msg.content">
-            <div
-              class="chat-card__markdown"
-              [innerHTML]="renderMarkdown(msg.content)">
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <!-- EMPTY STATE -->
-    <ng-template #emptyState>
-    <div class="chat-card__empty" role="presentation">
-      <h2 class="chat-card__empty-title">
-        Bienvenido al chat de GreenMatch
-      </h2>
-
-      <p class="chat-card__empty-subtitle">
-        Cuéntame sobre tus plantas y te ayudo con riego, luz, trasplantes y planes de cuidado personalizados.
-      </p>
-
-      <p class="chat-card__empty-hint">
-        Tip: puedes empezar adjuntando imágenes de tu planta para identifcarla y luego preguntarme sobre sus cuidados.
-      </p>
-    </div>
-  </ng-template>
-
-
-    <!-- PREVIEW DE IMÁGENES SELECCIONADAS -->
-    <div class="chat-card__preview" *ngIf="pendingPreviews.length">
-      <div
-        class="chat-card__preview-item"
-        *ngFor="let src of pendingPreviews; let i = index">
-        <img [src]="src" alt="Vista previa imagen {{ i + 1 }}" />
+    <!-- Sidebar de conversaciones (izquierda, fija con scroll propio) -->
+    <aside
+      class="hidden md:flex w-72 max-w-xs flex-col min-h-0 border-r border-[rgba(148,163,184,0.12)] bg-[#050c08] px-3 py-3 text-sm text-[#e5e7eb] z-20"
+    >
+      <header class="flex flex-col gap-2 mb-3">
         <button
           type="button"
-          class="chat-card__preview-remove"
-          (click)="removePending(i)"
-          aria-label="Quitar imagen">
-          ×
-        </button>
-      </div>
-    </div>
-
-    <!-- COMPOSER: barra tipo ChatGPT -->
-    <form
-      class="chat-card__composer"
-      (ngSubmit)="handleSubmit()"
-      novalidate
-      (dragover)="onDragOver($event)"
-      (dragleave)="onDragLeave($event)"
-      (drop)="onDrop($event)"
-      [class.chat-card__composer--dragover]="dragOver">
-
-      <div class="chat-card__composer-inner">
-        <!-- Input file oculto -->
-        <input
-          #fileInput
-          type="file"
-          accept="image/*"
-          multiple
-          hidden
-          (change)="onFileSelected($event)" />
-
-        <!-- Botón + (círculo a la izquierda) -->
-        <button
-          type="button"
-          class="chat-card__attach"
-          (click)="fileInput.click()"
-          aria-label="Adjuntar imágenes (máx. 3)">
-          +
-        </button>
-
-        <label class="visually-hidden" for="chat-message">
-          Escribe tu mensaje
-        </label>
-
-        <!-- Campo de texto -->
-        <div class="chat-card__input">
-          <input
-            id="chat-message"
-            name="message"
-            type="text"
-            [(ngModel)]="newMessage"
-            placeholder="Escribe un mensaje..."
-            autocomplete="off"
-            aria-label="Mensaje a enviar" />
-        </div>
-
-        <!-- Botón enviar (círculo verde a la derecha) -->
-        <button
-          class="chat-card__send"
-          type="submit"
-          [disabled]="(!newMessage.trim() && !pendingPreviews.length) || isSending">
-          <span class="chat-card__send-icon">
-            {{ isSending ? '…' : '➤' }}
+          class="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-[rgba(148,163,184,0.18)] bg-[rgba(4,9,6,0.96)] text-xs font-medium px-3 py-2 text-[#e5f4ea] hover:bg-[#0b1510] hover:border-[rgba(56,207,119,0.7)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.35)] transition-all duration-200 ease-out"
+          (click)="newConversation()"
+        >
+          <span
+            class="flex items-center justify-center w-4 h-4 text-base leading-none"
+          >
+            +
           </span>
+          Nueva conversación
         </button>
-      </div>
-    </form>
-  </section>
-</main>
+        <div
+          class="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[rgba(148,163,184,0.8)]"
+        >
+          Chats
+        </div>
+      </header>
 
-<app-barra-inferior
-  (toggleSideBar)="toggleSidebar()"
-  (collapsedChange)="onBottomBarCollapsed($event)">
-</app-barra-inferior>
+      <section class="flex-1 min-h-0 overflow-y-auto pr-1 space-y-1">
+        <ng-container *ngIf="pastConversations?.length; else noConversations">
+          <ul class="space-y-0.5">
+            <li
+              *ngFor="let conv of pastConversations"
+              (click)="selectConversation(conv)"
+              class="rounded-md px-2.5 py-1.5 cursor-pointer transition-colors duration-150 ease-out flex flex-col border border-transparent"
+              [ngClass]="
+                conv.id === sessionId
+                  ? 'bg-[#050c08] border-l-2 border-l-[#1bcf16]'
+                  : 'hover:bg-[#172018]/80'
+              "
+            >
+              <div class="font-medium truncate">
+                {{ conv.title || ('Chat #' + conv.id) }}
+              </div>
+              <div class="text-[0.75rem] text-[#94a3b8]">
+                Última actividad:
+                {{ conv.last_activity_at | date: 'short' }}
+              </div>
+            </li>
+          </ul>
+        </ng-container>
+
+        <ng-template #noConversations>
+          <div class="mt-4 text-[0.85rem] text-[rgba(148,163,184,0.9)]">
+            <p>No tienes conversaciones previas.</p>
+            <p>Empieza una nueva para verlas aquí.</p>
+          </div>
+        </ng-template>
+      </section>
+    </aside>
+
+    <!-- Área principal del chat -->
+    <main
+      class="flex-1 flex flex-col min-h-0 px-3 sm:px-4 md:px-8 lg:px-10 bg-[#10150f]"
+    >
+      <section class="w-full max-w-5xl mx-auto flex flex-col flex-1 min-h-0">
+        <!-- LISTA DE MENSAJES (única parte que hace scroll) -->
+        <div
+          class="flex-1 min-h-0 flex flex-col gap-3 px-3 sm:px-4 md:px-6 pt-4 pb-2 overflow-y-auto"
+          role="log"
+          aria-live="polite"
+          #messagesContainer
+        >
+          <ng-container *ngIf="messages.length > 0; else emptyState">
+            <div class="space-y-3">
+              <div
+                *ngFor="let msg of messages"
+                class="flex flex-col gap-1"
+                [ngClass]="msg.sender === 'user' ? 'items-end' : 'items-start'"
+                role="listitem"
+              >
+                <!-- Imágenes del mensaje (si existen) -->
+                <div
+                  class="flex flex-wrap gap-1.5 mb-1"
+                  *ngIf="msg.image_gcs_uris?.length"
+                >
+                  <figure
+                    class="m-0 rounded-xl overflow-hidden max-w-[180px] max-h-[180px] border border-[rgba(148,163,184,0.4)] bg-[rgba(15,23,42,0.85)]"
+                    *ngFor="let img of msg.image_gcs_uris; let i = index"
+                  >
+                    <img
+                      [src]="img"
+                      [alt]="msg.sender === 'user'
+                        ? 'Imagen enviada por ti'
+                        : 'Imagen enviada por el asistente'"
+                      loading="lazy"
+                      class="block w-full h-full object-cover"
+                    />
+                  </figure>
+                </div>
+                <div
+                  class="max-w-[78%] md:max-w-[620px] rounded-2xl border px-3.5 py-2.5 text-[0.94rem] leading-snug transition duration-200 ease-out"
+                  [ngClass]="
+                    msg.sender === 'user'
+                      ? 'bg-[#1bcf16] text-[#052814] border-[rgba(56,207,119,0.85)] shadow-[0_4px_10px_rgba(34,197,94,0.32)]'
+                      : 'bg-[#172018] text-[#e5e7eb] border-[rgba(148,163,184,0.14)] shadow-[0_4px_10px_rgba(15,23,42,0.55)]'
+                  "
+                >
+                  <div
+                    *ngIf="msg.sender === 'user'; else assistantMd"
+                    class="max-w-none text-[0.94rem] leading-snug
+                          [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1 [&>li]:my-0.5
+                          [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+                    [innerHTML]="renderMarkdown(msg.content)"
+                  ></div>
+
+                  <ng-template #assistantMd>
+                    <div
+                      class="prose prose-invert prose-sm max-w-none
+                            leading-relaxed
+                            [&>*:first-child]:mt-0 [&>*:last-child]:mb-0
+                            prose-p:my-1
+                            prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5
+                            prose-pre:mt-2 prose-pre:mb-2 prose-pre:bg-[#020617]
+                            prose-pre:border prose-pre:border-[#1f2937]
+                            prose-pre:rounded-xl prose-pre:px-3 prose-pre:py-2
+                            prose-code:text-[0.8rem] prose-code:bg-[#020617]
+                            prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                            prose-a:text-[#6ee7b7] hover:prose-a:text-[#a7f3d0]
+                            prose-strong:text-[#e5e7eb]"
+                      [innerHTML]="renderMarkdown(msg.content)"
+                    ></div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- EMPTY STATE -->
+          <ng-template #emptyState>
+            <div class="flex-1 flex items-center justify-center">
+              <div class="max-w-xl text-center space-y-3">
+                <h2
+                  class="text-[1.5rem] md:text-[1.75rem] font-semibold text-[#f9fafb]"
+                >
+                  Bienvenido al chat de GreenMatch
+                </h2>
+
+                <p
+                  class="text-sm md:text-[0.95rem] text-[rgba(226,232,240,0.82)] leading-relaxed"
+                >
+                  Cuéntame sobre tus plantas y te ayudo con riego, luz,
+                  trasplantes y planes de cuidado personalizados.
+                </p>
+
+                <p
+                  class="text-xs md:text-sm text-[rgba(148,163,184,0.9)] leading-relaxed"
+                >
+                  Tip: puedes empezar adjuntando imágenes de tu planta para
+                  identificarla y luego preguntarme sobre sus cuidados.
+                </p>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- PREVIEW DE IMÁGENES SELECCIONADAS -->
+        <div
+          class="flex gap-1.5 px-3 sm:px-4 md:px-6 pb-1 pt-1 overflow-x-auto"
+          *ngIf="pendingPreviews.length"
+        >
+          <div
+            class="relative flex-0-0-auto w-[70px] h-[70px] rounded-xl overflow-hidden border border-[rgba(148,163,184,0.4)] bg-[rgba(15,23,42,0.85)]"
+            *ngFor="let src of pendingPreviews; let i = index"
+          >
+            <img
+              [src]="src"
+              [alt]="'Vista previa imagen ' + (i + 1)"
+              class="w-full h-full object-cover block"
+            />
+            <button
+              type="button"
+              class="absolute top-1 right-1 w-[18px] h-[18px] rounded-full border-none bg-[rgba(15,23,42,0.85)] text-[#e5e7eb] text-[0.75rem] leading-none flex items-center justify-center cursor-pointer"
+              (click)="removePending(i)"
+              aria-label="Quitar imagen"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- COMPOSER (quieto abajo) -->
+        <form
+          class="px-3 sm:px-4 md:px-6 pt-2 pb-4"
+          (ngSubmit)="handleSubmit()"
+          novalidate
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <div
+            class="max-w-4xl mx-auto flex items-center gap-2.5 rounded-full border border-[rgba(148,163,184,0.14)] bg-transparent px-2.5 py-1.5 shadow-[0_0_0_1px_rgba(0,0,0,0.45)] transition duration-200 ease-out"
+          >
+            <!-- Input file oculto -->
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              (change)="onFileSelected($event)"
+            />
+
+            <!-- botón + -->
+            <button
+              type="button"
+              class="flex items-center justify-center w-9 h-9 rounded-full border border-[rgba(148,163,184,0.18)] bg-[#10150f] text-[#d3e5d5] text-lg font-medium hover:border-[rgba(56,207,119,0.85)] hover:bg-[#17241b] hover:shadow-[0_0_0_1px_rgba(25,135,52,0.3)] transition-all duration-200 ease-out"
+              (click)="fileInput.click()"
+              aria-label="Adjuntar imágenes (máx. 3)"
+            >
+              <span class="leading-none text-lg font-medium">+</span>
+            </button>
+
+            <!-- Campo de texto -->
+            <div
+              class="flex-1 flex items-center rounded-full bg-[#1c261d] border border-[rgba(148,163,184,0.16)] min-h-[48px] px-3 focus-within:border-[rgba(56,207,119,0.85)] focus-within:shadow-[0_0_0_2px_rgba(25,135,52,0.35)] focus-within:bg-[#1b2b20] transition-all duration-200 ease-out"
+            >
+              <label class="sr-only" for="chat-message">
+                Escribe tu mensaje
+              </label>
+              <input
+                id="chat-message"
+                name="message"
+                type="text"
+                [(ngModel)]="newMessage"
+                placeholder="Escribe un mensaje..."
+                autocomplete="off"
+                aria-label="Mensaje a enviar"
+                class="w-full bg-transparent border-none text-sm text-[#e5e7eb] placeholder:text-[#94a3b8] focus:outline-none"
+              />
+            </div>
+
+            <!-- botón enviar -->
+            <button
+              class="flex items-center justify-center h-9 px-5 rounded-full text-[0.7rem] sm:text-xs font-semibold tracking-[0.18em] uppercase bg-[#1bcf16] text-[#052814] hover:bg-[#36cf70] transition-colors duration-200 ease-out shadow-[0_6px_14px_rgba(16,185,129,0.35)] disabled:opacity-50 disabled:cursor-not-allowed"
+              type="submit"
+              [disabled]="(!newMessage?.trim() && !pendingPreviews.length) || isSending"
+            >
+              <span *ngIf="!isSending; else sending">Enviar</span>
+              <ng-template #sending>…</ng-template>
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- NAV LATERAL DERECHO (vertical con ranura) -->
+  <app-barra-inferior
+    (collapsedChange)="onRightNavCollapsed($event)"
+  ></app-barra-inferior>
+</div>

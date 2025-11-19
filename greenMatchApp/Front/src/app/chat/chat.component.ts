@@ -14,7 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChatMessage, ChatResponse, Conversation } from '../models/chat.model';
 import { ChatService } from './chat.service';
 import { take } from 'rxjs/operators';
-import { HostBinding } from '@angular/core';
+
 // Markdown
 import { marked } from 'marked';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -50,22 +50,14 @@ export class ChatComponent implements OnInit, AfterViewInit {
   dragOver = false;
   isSending = false;
 
-  private _bottomBarCollapsed = false;
-
-  @HostBinding('class.chat--bottom-collapsed')
-  get bottomBarCollapsedClass() {
-    return this._bottomBarCollapsed;
-  }
-
-  onBottomBarCollapsed(collapsed: boolean) {
-    this._bottomBarCollapsed = collapsed;
-  }
+  // Estado del nav lateral derecho (igual que isCollapsed en el preview React)
+  rightNavCollapsed = true;
 
   constructor(
     private chatService: ChatService,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Si viene un prompt desde Mis Plantas, autoenvía
@@ -76,6 +68,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
         this.sendMessage();
       }
     });
+
+    // Carga conversaciones previas al entrar
+    if (this.userId) {
+      this.loadPastConversations();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -91,7 +88,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
-  // Barra inferior dispara esto
+  // ------------------
+  //   Form submit
+  // ------------------
   handleSubmit() {
     this.sendMessage();
   }
@@ -167,7 +166,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
     this.isSending = true;
 
-    // 1. Mensaje local optimista (usa previews para que el usuario vea algo inmediato)
+    // Mensaje local optimista
     const localMsg: ChatMessage = {
       sender: 'user',
       content: text || (hasImages ? '' : null),
@@ -217,7 +216,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
         });
     };
 
-    // 2. Si hay imágenes → primero subirlas al bucket
+    // Si hay imágenes → primero subirlas al bucket
     if (filesToUpload.length) {
       const formData = new FormData();
       formData.append('user_id', this.userId.toString());
@@ -232,7 +231,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.chatService.uploadImages(formData).subscribe({
         next: (resp) => {
           this.sessionId = resp.session_id;
-          const imageUris = resp.image_urls; // gs://... que usa el back
+          const imageUris = resp.image_urls;
           sendTextAndGetReply(imageUris);
         },
         error: (err) => {
@@ -241,13 +240,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
         },
       });
     } else {
-      // 3. Sin imágenes → solo texto
+      // Solo texto
       sendTextAndGetReply();
     }
   }
 
   // ------------------
-  //   Sidebar
+  //   Sidebar izq
   // ------------------
   toggleSidebar() {
     this.showSidebar = !this.showSidebar;
@@ -282,6 +281,13 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.sessionId = null;
     this.messages = [];
     this.showSidebar = false;
+  }
+
+  // ------------------
+  //   Estado nav lateral derecho
+  // ------------------
+  onRightNavCollapsed(collapsed: boolean) {
+    this.rightNavCollapsed = collapsed;
   }
 
   // ------------------

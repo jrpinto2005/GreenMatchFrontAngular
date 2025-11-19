@@ -1,19 +1,21 @@
-import { Component, HostBinding, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-barra-inferior',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './barra-inferior.component.html',
-  styleUrls: ['./barra-inferior.component.scss']
+  styleUrls: ['./barra-inferior.component.scss'],
 })
 export class BarraInferiorComponent {
-  // Estado de barra colapsada (solo se ve el “tirador”)
-  @HostBinding('class.barra-inferior--collapsed')
-  isCollapsed = false;
+  isCollapsed = true;
 
-  // Por si el padre (chat) quiere reaccionar a este estado
   @Output() collapsedChange = new EventEmitter<boolean>();
 
   toggleCollapsed(): void {
