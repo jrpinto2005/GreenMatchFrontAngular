@@ -14,8 +14,7 @@ import { AuthResponse, AuthService } from '../auth/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
@@ -48,93 +47,90 @@ export class LoginComponent {
     newPassword: ['', [Validators.required, Validators.minLength(6)]]
   });
 
-  readonly demoCredentials = computed(() => ({
-    username: 'greenfriend',
-    password: 'Green123!'
-  }));
 
   setMode(next: 'login' | 'register' | 'reset'): void {
     this.mode.set(next);
     this.feedback.set(null);
   }
 
-submitLogin(): void {
-  if (this.loginForm.invalid) {
-    this.loginForm.markAllAsTouched();
-    return;
-  }
-  this.isLoading.set(true);
-  const { identifier, password } = this.loginForm.value;
-
-  this.auth.login(identifier ?? '', password ?? '').subscribe({
-    next: (result) => {
-      this.handleAuthResult(result, () => this.postAuthNavigation());
-    },
-    error: (err) => {
-      console.error('Login error', err);
-      this.isLoading.set(false);
-      this.feedback.set({
-        ok: false,
-        message: 'Error de comunicación con el servidor.'
-      });
+  submitLogin(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
-  });
-}
+    this.isLoading.set(true);
+    const { identifier, password } = this.loginForm.value;
+
+    this.auth.login(identifier ?? '', password ?? '').subscribe({
+      next: result => {
+        this.handleAuthResult(result, () => this.postAuthNavigation());
+      },
+      error: err => {
+        console.error('Login error', err);
+        this.isLoading.set(false);
+        this.feedback.set({
+          ok: false,
+          message: 'Error de comunicación con el servidor.'
+        });
+      }
+    });
+  }
 
   submitRegister(): void {
-  if (this.registerForm.invalid) {
-    this.registerForm.markAllAsTouched();
-    return;
-  }
-  this.isLoading.set(true);
-  const { name, email, username, password } = this.registerForm.value;
-
-  this.auth.register({
-    name: name ?? '',
-    email: email ?? '',
-    username: username ?? '',
-    password: password ?? ''
-  }).subscribe({
-    next: (result) => {
-      this.handleAuthResult(result, () => this.postAuthNavigation());
-    },
-    error: (err) => {
-      console.error('Register error', err);
-      this.isLoading.set(false);
-      this.feedback.set({
-        ok: false,
-        message: 'Error de comunicación con el servidor.'
-      });
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
     }
-  });
-}
+    this.isLoading.set(true);
+    const { name, email, username, password } = this.registerForm.value;
+
+    this.auth
+      .register({
+        name: name ?? '',
+        email: email ?? '',
+        username: username ?? '',
+        password: password ?? ''
+      })
+      .subscribe({
+        next: result => {
+          this.handleAuthResult(result, () => this.postAuthNavigation());
+        },
+        error: err => {
+          console.error('Register error', err);
+          this.isLoading.set(false);
+          this.feedback.set({
+            ok: false,
+            message: 'Error de comunicación con el servidor.'
+          });
+        }
+      });
+  }
 
   submitReset(): void {
-  if (this.resetForm.invalid) {
-    this.resetForm.markAllAsTouched();
-    return;
-  }
-  this.isLoading.set(true);
-  const { identifier, newPassword } = this.resetForm.value;
-
-  this.auth.resetPassword(identifier ?? '', newPassword ?? '').subscribe({
-    next: (result) => {
-      this.handleAuthResult(result, () => this.setMode('login'));
-      if (result.ok) {
-        this.resetForm.reset();
-      }
-    },
-    error: (err) => {
-      console.error('Reset error', err);
-      this.isLoading.set(false);
-      this.feedback.set({
-        ok: false,
-        message: 'Error de comunicación con el servidor.'
-      });
+    if (this.resetForm.invalid) {
+      this.resetForm.markAllAsTouched();
+      return;
     }
-  });
-}
+    this.isLoading.set(true);
+    const { identifier, newPassword } = this.resetForm.value;
 
+    this.auth.resetPassword(identifier ?? '', newPassword ?? '').subscribe({
+      next: result => {
+        this.handleAuthResult(result, () => this.setMode('login'));
+        if (result.ok) {
+          this.resetForm.reset();
+        }
+      },
+      error: err => {
+        console.error('Reset error', err);
+        this.isLoading.set(false);
+        this.feedback.set({
+          ok: false,
+          message: 'Error de comunicación con el servidor.'
+        });
+      }
+    });
+  }
 
   private postAuthNavigation(): void {
     const redirect = this.route.snapshot.queryParamMap.get('redirect');
@@ -164,9 +160,13 @@ submitLogin(): void {
       if (!primaryControl || !confirmControl) {
         return null;
       }
-      const mismatch = (primaryControl.value ?? '') !== (confirmControl.value ?? '');
+      const mismatch =
+        (primaryControl.value ?? '') !== (confirmControl.value ?? '');
       if (mismatch) {
-        confirmControl.setErrors({ ...(confirmControl.errors ?? {}), mismatch: true });
+        confirmControl.setErrors({
+          ...(confirmControl.errors ?? {}),
+          mismatch: true
+        });
         return { mismatch: true };
       }
 

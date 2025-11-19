@@ -1,8 +1,24 @@
 <header class="sticky top-0 z-40 bg-[#050c08]/95 backdrop-blur-xl border-b border-[rgba(148,163,184,0.12)]"
   role="banner" aria-label="Barra superior">
   <div class="flex h-[68px] w-full items-center justify-between px-4 md:px-6">
+
     <!-- Lado izquierdo: logo + marca -->
     <div class="flex items-center gap-3">
+
+      <button type="button" class="inline-flex md:hidden items-center justify-center w-9 h-9 mr-1
+             rounded-full border border-[rgba(148,163,184,0.35)]
+             bg-[rgba(10,19,13,0.95)] text-[#e5e7eb]
+             hover:bg-[rgba(15,23,18,1)]
+             hover:border-[rgba(56,207,119,0.7)]
+             hover:shadow-[0_0_0_1px_rgba(56,207,119,0.35)]
+             transition-all duration-150 ease-out" (click)="onToggleMenu()" aria-label="Abrir historial de chats">
+        <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round">
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h12" />
+        </svg>
+      </button>
       <!-- Logo pill -->
       <div
         class="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#1bcf16] text-xs font-semibold tracking-tight text-[#052814] shadow-[0_4px_10px_rgba(16,185,129,0.35)] border border-[rgba(34,197,94,0.28)] transition duration-200 ease-out">

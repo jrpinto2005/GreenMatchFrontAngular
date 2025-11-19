@@ -1,140 +1,272 @@
-<section class="auth">
-  <header class="auth__header">
-    <div class="auth__brand">
-      <img src="assets/logo-cream.png" alt="GreenMatch" width="52" height="52" />
-      <div>
-        <h1>GreenMatch</h1>
-        <p>Conecta con tus plantas</p>
-      </div>
-    </div>
-    <a routerLink="/" class="auth__ghost">Volver a la landing</a>
-  </header>
-
-  <div class="auth__grid">
-    <article class="auth__card">
-      <nav class="auth__tabs" aria-label="Cambiar modo de autenticacion">
-        <button
-          type="button"
-          (click)="setMode('login')"
-          [class.auth__tab--active]="mode() === 'login'">
-          Iniciar sesion
-        </button>
-        <button
-          type="button"
-          (click)="setMode('register')"
-          [class.auth__tab--active]="mode() === 'register'">
-          Registrarme
-        </button>
-        <button
-          type="button"
-          (click)="setMode('reset')"
-          [class.auth__tab--active]="mode() === 'reset'">
-          Recuperar clave
-        </button>
-      </nav>
-
-      <p class="auth__intro">
-        {{
-          mode() === 'login'
-            ? 'Ingresa con tu usuario o correo para chatear.'
-            : mode() === 'register'
-              ? 'Crea una cuenta para guardar tus conversaciones.'
-              : 'Actualiza tu contrasena si la olvidaste.'
-        }}
-      </p>
-
-      <div *ngIf="feedback()" class="auth__feedback" [class.auth__feedback--ok]="feedback()?.ok">
-        {{ feedback()?.message }}
-      </div>
-
-      <form *ngIf="mode() === 'login'" [formGroup]="loginForm" (ngSubmit)="submitLogin()" novalidate>
-        <label class="auth__field">
-          <span>Usuario o correo</span>
-          <input
-            type="text"
-            placeholder="greenfriend o demo@greenmatch.app"
-            formControlName="identifier" />
-        </label>
-        <label class="auth__field">
-          <span>Contrasena</span>
-          <input type="password" placeholder="******" formControlName="password" />
-        </label>
-        <button class="auth__cta" type="submit">
-          {{ isLoading() ? 'Validando...' : 'Entrar al chat' }}
-        </button>
-      </form>
-
-      <form
-        *ngIf="mode() === 'register'"
-        [formGroup]="registerForm"
-        (ngSubmit)="submitRegister()"
-        novalidate>
-        <label class="auth__field">
-          <span>Nombre</span>
-          <input type="text" placeholder="Tu nombre" formControlName="name" />
-        </label>
-        <label class="auth__field">
-          <span>Usuario</span>
-          <input type="text" placeholder="ej. monsteraqueen" formControlName="username" />
-        </label>
-        <label class="auth__field">
-          <span>Correo</span>
-          <input type="email" placeholder="hola@greenmatch.app" formControlName="email" />
-        </label>
-        <div class="auth__row">
-          <label class="auth__field">
-            <span>Contrasena</span>
-            <input type="password" placeholder="Minimo 6 caracteres" formControlName="password" />
-          </label>
-          <label class="auth__field">
-            <span>Confirma</span>
-            <input type="password" placeholder="Repite tu contrasena" formControlName="confirmPassword" />
-          </label>
+<div
+  class="min-h-screen bg-[radial-gradient(circle_at_top,_#111827_0,_#1b2a0f_32%,_#061316_65%,_#020617_100%)] text-slate-50 flex items-center justify-center px-4 py-10"
+>
+  <section class="w-full max-w-6xl space-y-8">
+    <!-- Header -->
+    <header class="flex items-center justify-between gap-4 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-white/5 shadow-[0_16px_40px_rgba(15,23,42,0.7)]"
+        >
+          <img
+            src="assets/logo-cream.png"
+            alt="GreenMatch"
+            class="h-8 w-8 object-contain"
+          />
         </div>
-        <button class="auth__cta" type="submit">
-          {{ isLoading() ? 'Creando...' : 'Crear cuenta' }}
-        </button>
-      </form>
-
-      <form *ngIf="mode() === 'reset'" [formGroup]="resetForm" (ngSubmit)="submitReset()" novalidate>
-        <label class="auth__field">
-          <span>Usuario o correo</span>
-          <input type="text" placeholder="Con lo que inicias sesion" formControlName="identifier" />
-        </label>
-        <label class="auth__field">
-          <span>Nueva contrasena</span>
-          <input type="password" placeholder="Escribe la nueva" formControlName="newPassword" />
-        </label>
-        <button class="auth__cta" type="submit">
-          {{ isLoading() ? 'Guardando...' : 'Actualizar contrasena' }}
-        </button>
-      </form>
-    </article>
-
-    <aside class="auth__aside">
-      <div class="auth__demo">
-        <h2>Prueba rapida</h2>
-        <p>
-          Usuario: <strong>{{ demoCredentials().username }}</strong><br />
-          Clave: <strong>{{ demoCredentials().password }}</strong>
-        </p>
-        <p>Usalos para entrar directo al chat.</p>
+        <div class="space-y-0.5">
+          <h1 class="text-lg sm:text-xl font-semibold tracking-[0.18em] uppercase text-slate-100">
+            GreenMatch
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300">
+            La mejor app para cuidar tus plantas
+          </p>
+        </div>
       </div>
-      <ul class="auth__perks">
-        <li>
-          <span>*</span>
-          Acceso inmediato al chat verde.
-        </li>
-        <li>
-          <span>*</span>
-          Guardamos tus datos en tu dispositivo.
-        </li>
-        <li>
-          <span>*</span>
-          Un solo login para tu calendario y wants.
-        </li>
-      </ul>
-      <a routerLink="/" class="auth__ghost auth__ghost--block">Descubrir beneficios</a>
-    </aside>
-  </div>
-</section>
+
+      <a
+        routerLink="/"
+        class="inline-flex items-center gap-2 rounded-full border border-slate-500/60 bg-slate-950/40 px-3.5 py-2 text-[0.72rem] sm:text-xs font-semibold tracking-[0.18em] uppercase text-slate-100 hover:border-slate-300 hover:bg-slate-900/80 hover:text-white transition"
+      >
+        <span class="text-[0.7rem]">←</span>
+        Volver a la landing
+      </a>
+    </header>
+
+    <!-- Grid principal -->
+    <div
+      class="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-stretch"
+    >
+      <!-- Card login/register -->
+      <article
+        class="rounded-3xl border border-white/10 bg-slate-950/70 px-5 py-6 sm:px-7 sm:py-8 shadow-[0_30px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl flex flex-col gap-5 min-h-[460px]"
+      >
+        <!-- Tabs -->
+        <nav
+          class="inline-flex rounded-full bg-slate-900/80 p-1.5 gap-1"
+          aria-label="Cambiar modo de autenticación"
+        >
+          <button
+            type="button"
+            (click)="setMode('login')"
+            [ngClass]="
+              mode() === 'login'
+                ? 'bg-lime-400 text-slate-900 shadow-[0_6px_18px_rgba(132,204,22,0.35)]'
+                : 'bg-transparent text-slate-300 hover:bg-white/5'
+            "
+            class="h-9 sm:h-10 px-4 sm:px-5 rounded-full text-[0.7rem] sm:text-xs font-semibold tracking-[0.18em] uppercase transition flex items-center justify-center"
+          >
+            Iniciar sesión
+          </button>
+
+          <button
+            type="button"
+            (click)="setMode('register')"
+            [ngClass]="
+              mode() === 'register'
+                ? 'bg-lime-400 text-slate-900 shadow-[0_6px_18px_rgba(132,204,22,0.35)]'
+                : 'bg-transparent text-slate-300 hover:bg-white/5'
+            "
+            class="h-9 sm:h-10 px-4 sm:px-5 rounded-full text-[0.7rem] sm:text-xs font-semibold tracking-[0.18em] uppercase transition flex items-center justify-center"
+          >
+            Registrarme
+          </button>
+        </nav>
+
+        <!-- Intro dinámica -->
+        <p class="text-sm sm:text-[0.95rem] text-slate-300 max-w-md">
+          {{
+            mode() === 'login'
+              ? 'Ingresa con tu usuario o correo para continuar tus chats y ver los planes de cuidado que ya guardaste.'
+              : 'Crea una cuenta para que GreenMatch recuerde tus plantas, sus ambientes y todos sus planes de cuidado.'
+          }}
+        </p>
+
+        <!-- Feedback -->
+        <div
+          *ngIf="feedback()"
+          class="mt-1 flex items-start gap-2 rounded-2xl border px-3 py-2.5 text-xs sm:text-[0.8rem]"
+          [ngClass]="
+            feedback()?.ok
+              ? 'border-green-400/60 bg-green-500/10 text-green-100'
+              : 'border-rose-400/60 bg-rose-500/10 text-rose-100'
+          "
+        >
+          <span class="mt-[2px] text-sm">
+            {{ feedback()?.ok ? '✓' : '!' }}
+          </span>
+          <span>{{ feedback()?.message }}</span>
+        </div>
+
+        <!-- FORM LOGIN -->
+        <form
+          *ngIf="mode() === 'login'"
+          [formGroup]="loginForm"
+          (ngSubmit)="submitLogin()"
+          novalidate
+          class="mt-2 flex flex-col gap-4"
+        >
+          <label class="flex flex-col gap-1 text-xs font-medium text-slate-200">
+            <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+              Usuario o correo
+            </span>
+            <input
+              type="text"
+              formControlName="identifier"
+              placeholder="Tu correo"
+              autocomplete="username email"
+              class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+            />
+          </label>
+
+          <label class="flex flex-col gap-1 text-xs font-medium text-slate-200">
+            <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+              Contraseña
+            </span>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+            />
+          </label>
+
+          <button
+            class="mt-2 inline-flex w-full items-center justify-center rounded-full bg-lime-400 px-4 py-2.5 text-[0.7rem] sm:text-xs font-semibold uppercase tracking-[0.22em] text-slate-900 shadow-[0_10px_26px_rgba(132,204,22,0.35)] hover:bg-lime-200 hover:shadow-[0_14px_32px_rgba(132,204,22,0.4)] active:translate-y-px transition"
+            type="submit"
+          >
+            {{ isLoading() ? 'Validando…' : 'Entrar a GreenMatch' }}
+          </button>
+        </form>
+
+        <!-- FORM REGISTER -->
+        <form
+          *ngIf="mode() === 'register'"
+          [formGroup]="registerForm"
+          (ngSubmit)="submitRegister()"
+          novalidate
+          class="mt-2 flex flex-col gap-4"
+        >
+          <label class="flex flex-col gap-1 text-xs font-medium text-slate-200">
+            <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+              Nombre
+            </span>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Tu nombre"
+              autocomplete="name"
+              class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+            />
+          </label>
+
+          <label class="flex flex-col gap-1 text-xs font-medium text-slate-200">
+            <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+              Usuario
+            </span>
+            <input
+              type="text"
+              formControlName="username"
+              placeholder="ej. monsteraqueen"
+              autocomplete="username"
+              class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+            />
+          </label>
+
+          <label class="flex flex-col gap-1 text-xs font-medium text-slate-200">
+            <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+              Correo
+            </span>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="hola@greenmatch.app"
+              autocomplete="email"
+              class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+            />
+          </label>
+
+          <div class="flex flex-col sm:flex-row sm:gap-3 gap-4">
+            <label class="flex-1 flex flex-col gap-1 text-xs font-medium text-slate-200">
+              <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+                Contraseña
+              </span>
+              <input
+                type="password"
+                formControlName="password"
+                placeholder="Mínimo 6 caracteres"
+                autocomplete="new-password"
+                class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+              />
+            </label>
+
+            <label class="flex-1 flex flex-col gap-1 text-xs font-medium text-slate-200">
+              <span class="uppercase tracking-[0.18em] text-[0.7rem] text-slate-400">
+                Confirma
+              </span>
+              <input
+                type="password"
+                formControlName="confirmPassword"
+                placeholder="Repite tu contraseña"
+                autocomplete="new-password"
+                class="mt-1.5 w-full rounded-2xl border border-white/8 bg-slate-900/70 px-3 py-2.5 text-sm text-slate-50 placeholder:text-slate-500 shadow-[0_10px_24px_rgba(0,0,0,0.6)] focus:border-lime-300 focus:ring-1 focus:ring-lime-300/35 focus:outline-none transition"
+              />
+            </label>
+          </div>
+
+          <button
+            class="mt-2 inline-flex w-full items-center justify-center rounded-full bg-lime-400 px-4 py-2.5 text-[0.7rem] sm:text-xs font-semibold uppercase tracking-[0.22em] text-slate-900 shadow-[0_10px_26px_rgba(132,204,22,0.35)] hover:bg-lime-200 hover:shadow-[0_14px_32px_rgba(132,204,22,0.4)] active:translate-y-px transition"
+            type="submit"
+          >
+            {{ isLoading() ? 'Creando…' : 'Crear cuenta' }}
+          </button>
+        </form>
+      </article>
+
+      <!-- Aside derecho -->
+      <aside
+        class="hidden lg:flex flex-col justify-between rounded-3xl border border-lime-300/25 bg-gradient-to-b from-lime-900/40 via-emerald-900/40 to-slate-950/60 px-6 py-7 shadow-[0_30px_80px_rgba(20,83,45,0.9)] backdrop-blur-2xl"
+      >
+        <div class="space-y-5">
+          <h2 class="text-base sm:text-lg font-semibold tracking-[0.16em] uppercase text-lime-100">
+            Diseñado para plant lovers
+          </h2>
+
+          <!-- Texto principal más grande e importante -->
+          <p class="text-[0.95rem] sm:text-base text-lime-50/90 max-w-md">
+            Identifica tus plantas directamente desde el chat enviando fotos, o
+            guárdalas una a una con su nombre, luz y ubicación. Desde ahí,
+            genera planes de cuidado personalizados y pregúntale al asistente
+            todas las dudas que tengas.
+          </p>
+
+          <p class="text-[0.95rem] sm:text-base text-lime-50/90 max-w-md">
+            Lleva todas tus plantas siempre contigo y déjale al calendario
+            inteligente recordar por ti cada riego, fertilización y tarea
+            importante.
+          </p>
+
+          <ul class="space-y-3 text-sm text-lime-50/90">
+            <li class="flex gap-2 items-start">
+              <span
+                class="mt-[3px] h-4 w-4 rounded-full bg-lime-400/15 border border-lime-300 flex items-center justify-center text-[0.65rem] text-lime-100"
+              >
+                ✓
+              </span>
+              <span>Todas tus plantas en un solo lugar.</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <span
+                class="mt-[3px] h-4 w-4 rounded-full bg-lime-400/15 border border-lime-300 flex items-center justify-center text-[0.65rem] text-lime-100"
+              >
+                ✓
+              </span>
+              <span>Un chat altamente personalizado para ti.</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>
