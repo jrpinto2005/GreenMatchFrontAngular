@@ -66,4 +66,8 @@ export class ChatService {
         )
       );
   }
+
+  deleteConversation(sessionId: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiUrl}/chat/sessions/${sessionId}`);
+}
 }

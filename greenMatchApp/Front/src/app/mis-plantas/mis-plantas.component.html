@@ -101,27 +101,27 @@
 
         <!-- Imagen -->
         <div class="relative aspect-[16/10] overflow-hidden bg-gradient-to-b from-[#edf3e3] to-[#e9f0df]">
-          <img
-            src="assets/plant-placeholder.jpg"
-            [alt]="'Foto de ' + p.common_name"
-            loading="lazy"
-            class="w-full h-full object-cover scale-[1.02] saturate-[1.05] contrast-[1.03]"
-          />
-          <span
-            class="absolute left-2 top-2 rounded-full border border-[#dfe6c8]
-                   bg-[rgba(255,255,255,0.78)] backdrop-blur-[6px]
-                   px-2 py-0.5 text-[0.7rem] font-semibold text-[#24310e]"
-            [ngClass]="{
-              'bg-[rgba(198,232,255,0.8)] text-[#0b2a4a] ': p.light === 'baja',
-              'bg-[rgba(223,241,187,0.85)] text-[#24310e]': p.light === 'media',
-              'bg-[rgba(255,232,180,0.85)] text-[#4a330b]': p.light === 'alta',
-              'bg-[rgba(213,206,247,0.85)] text-[#201b4a]': p.light === 'indirecta'
-            }"
-            
-          >
-            {{ p.light || "—" }}
-          </span>
-        </div>
+            <img
+              [src]="getPlantImage(p)"
+              [alt]="'Foto de ' + p.common_name"
+              loading="lazy"
+              class="w-full h-full object-cover scale-[1.02] saturate-[1.05] contrast-[1.03]"
+            />
+            <span
+              class="absolute left-2 top-2 rounded-full border border-[#dfe6c8]
+                    bg-[rgba(255,255,255,0.78)] backdrop-blur-[6px]
+                    px-2 py-0.5 text-[0.7rem] font-semibold text-[#24310e]"
+              [ngClass]="{
+                'bg-[rgba(198,232,255,0.8)] text-[#0b2a4a] ': p.light === 'baja',
+                'bg-[rgba(223,241,187,0.85)] text-[#24310e]': p.light === 'media',
+                'bg-[rgba(255,232,180,0.85)] text-[#4a330b]': p.light === 'alta',
+                'bg-[rgba(213,206,247,0.85)] text-[#201b4a]': p.light === 'indirecta'
+              }"
+            >
+              {{ p.light || "—" }}
+            </span>
+          </div>
+
 
         <!-- Contenido -->
         <div class="px-3.5 pt-2.5 pb-1.5">
@@ -228,6 +228,50 @@
       class="flex flex-col gap-2.5 px-4 py-4 text-sm"
       (ngSubmit)="saveForm()"
     >
+          <!-- 🔸 Foto de la planta (opcional) -->
+      <label
+        class="flex flex-col gap-2 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase"
+      >
+        Foto de la planta
+        <div class="flex items-center gap-3">
+          <div
+            class="w-16 h-16 rounded-xl overflow-hidden border border-[rgba(21,30,8,0.2)]
+                   bg-[#f3f5e4] flex items-center justify-center"
+          >
+            <img
+              [src]="formImagePreview || placeholderImage"
+              alt="Vista previa planta"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <button
+              type="button"
+              (click)="photoInput.click()"
+              class="inline-flex items-center justify-center rounded-lg
+                     bg-[#e5ebc8] text-[#151e08] text-[0.7rem] font-semibold px-3 py-1.5
+                     border border-[rgba(21,30,8,0.2)]
+                     hover:bg-[#dbe3b4] hover:shadow-[0_4px_10px_rgba(0,0,0,0.08)]
+                     active:translate-y-px transition"
+            >
+              Elegir foto…
+            </button>
+            <span class="text-[0.68rem] text-[#9aa05c]">
+              JPG o PNG, máx. 5&nbsp;MB.
+            </span>
+          </div>
+
+          <input
+            #photoInput
+            type="file"
+            accept="image/*"
+            class="hidden"
+            (change)="onPhotoSelected($event)"
+          />
+        </div>
+      </label>
+
       <label class="flex flex-col gap-1 text-[0.75rem] font-semibold tracking-[0.14em] text-[#52510b] uppercase">
         Nombre común *
         <input

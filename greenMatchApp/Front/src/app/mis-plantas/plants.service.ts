@@ -13,21 +13,32 @@ export class PlantService {
   list(userId: number): Observable<Plant[]> {
     const params = new HttpParams().set('user_id', String(userId));
     return this.http.get<Plant[]>(`${this.apiUrl}/plants`, { params });
-    }
+  }
+
   create(payload: Partial<Plant> & { user_id: number; common_name: string }): Observable<Plant> {
     return this.http.post<Plant>(`${this.apiUrl}/plants`, payload);
   }
+
   get(id: number): Observable<Plant> {
     return this.http.get<Plant>(`${this.apiUrl}/plants/${id}`);
   }
+
   patch(id: number, payload: Partial<Plant>): Observable<Plant> {
     return this.http.patch<Plant>(`${this.apiUrl}/plants/${id}`, payload);
   }
+
   archive(id: number): Observable<{ ok: boolean }> {
     return this.http.delete<{ ok: boolean }>(`${this.apiUrl}/plants/${id}`);
   }
-  getCarePlan(plantId: number) {
-  return this.http.get<CarePlan | null>(`${this.apiUrl}/plants/${plantId}/care-plan`);
-}
 
+  getCarePlan(plantId: number) {
+    return this.http.get<CarePlan | null>(`${this.apiUrl}/plants/${plantId}/care-plan`);
+  }
+
+  // 🔸 NUEVO: subir / actualizar foto de planta
+  uploadImage(plantId: number, file: File): Observable<Plant> {
+    const form = new FormData();
+    form.append('file', file);
+    return this.http.post<Plant>(`${this.apiUrl}/plants/${plantId}/image`, form);
+  }
 }

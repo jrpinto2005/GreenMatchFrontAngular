@@ -24,6 +24,8 @@ export class MisPlantasComponent implements OnInit {
   private readonly plantSvc = inject(PlantService);
   private readonly router = inject(Router);
 
+  readonly placeholderImage = 'assets/plant-placeholder.jpg';
+
   userId = Number(localStorage.getItem('user_id'));
   loading = false;
   error: string | null = null;
@@ -40,6 +42,10 @@ export class MisPlantasComponent implements OnInit {
     humidity: '',
     notes: ''
   };
+
+  // 🔸 NUEVO: estado de imagen en el formulario
+  formImageFile: File | null = null;
+  formImagePreview: string | null = null;
 
   ngOnInit(): void {
     this.fetch();
@@ -72,6 +78,8 @@ export class MisPlantasComponent implements OnInit {
       humidity: '',
       notes: ''
     };
+    this.formImageFile = null;
+    this.formImagePreview = null;
     this.formOpen = true;
   }
 
@@ -82,18 +90,47 @@ export class MisPlantasComponent implements OnInit {
       nickname: p.nickname || '',
       location: p.location || '',
       light: p.light || '',
-      humidity: (p as any).humidity || '',
+      humidity: p.humidity || '',
       notes: p.notes || ''
     };
+    // preview inicial: la imagen actual de la planta (o placeholder)
+    this.formImageFile = null;
+    this.formImagePreview = this.getPlantImage(p);
     this.formOpen = true;
   }
 
   closeForm() {
     this.formOpen = false;
+    this.formImageFile = null;
+    this.formImagePreview = null;
+  }
+
+  // 🔸 NUEVO: cambio de foto en el formulario
+  onPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    if (!file.type.startsWith('image/')) return;
+
+    this.formImageFile = file;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      this.formImagePreview = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
   saveForm() {
     if (!this.userId) return;
+
+    const afterSave = () => {
+      this.formOpen = false;
+      this.formImageFile = null;
+      this.formImagePreview = null;
+      this.fetch();
+    };
 
     if (this.editing) {
       this.plantSvc
@@ -106,9 +143,19 @@ export class MisPlantasComponent implements OnInit {
           notes: this.form.notes
         })
         .subscribe({
-          next: () => {
-            this.formOpen = false;
-            this.fetch();
+          next: updatedPlant => {
+            // si hay nueva foto → subirla
+            if (this.formImageFile) {
+              this.plantSvc.uploadImage(updatedPlant.id, this.formImageFile).subscribe({
+                next: () => afterSave(),
+                error: e => {
+                  console.error('No se pudo subir foto', e);
+                  afterSave();
+                }
+              });
+            } else {
+              afterSave();
+            }
           },
           error: e => console.error('No se pudo actualizar', e)
         });
@@ -129,9 +176,18 @@ export class MisPlantasComponent implements OnInit {
           source: 'manual'
         })
         .subscribe({
-          next: () => {
-            this.formOpen = false;
-            this.fetch();
+          next: createdPlant => {
+            if (this.formImageFile) {
+              this.plantSvc.uploadImage(createdPlant.id, this.formImageFile).subscribe({
+                next: () => afterSave(),
+                error: e => {
+                  console.error('No se pudo subir foto', e);
+                  afterSave();
+                }
+              });
+            } else {
+              afterSave();
+            }
           },
           error: e => console.error('No se pudo crear', e)
         });
@@ -150,4 +206,26 @@ export class MisPlantasComponent implements OnInit {
     this.router.navigate(['/mis-plantas', p.id]);
   }
 
+  getPlantImage(p: Plant): string {
+    const uri = p.image_gcs_uri;
+    if (!uri) {
+      return this.placeholderImage;
+    }
+
+    if (uri.startsWith('http://') || uri.startsWith('https://')) {
+      return uri;
+    }
+
+    if (uri.startsWith('gs://')) {
+      const withoutScheme = uri.slice(5); 
+      const slashIdx = withoutScheme.indexOf('/');
+      if (slashIdx === -1) return this.placeholderImage;
+
+      const bucket = withoutScheme.slice(0, slashIdx);
+      const path = withoutScheme.slice(slashIdx + 1);
+      return `https://storage.googleapis.com/${bucket}/${path}`;
+    }
+
+    return this.placeholderImage;
+  }
 }

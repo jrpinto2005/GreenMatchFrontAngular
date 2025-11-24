@@ -14,66 +14,143 @@
       (click)="toggleSidebar()"
     ></div>
 
-<!-- Sidebar de conversaciones (izquierda, responsive) -->
-<aside
-  class="fixed inset-y-0 left-0 z-40 w-72 max-w-[78vw] flex flex-col
-         border-r border-[rgba(148,163,184,0.12)] bg-[#050c08]
-         px-3 py-3 text-sm text-[#e5e7eb]
-         transform transition-transform duration-200 ease-out
-         md:static md:inset-auto md:transform-none md:w-72 md:max-w-xs md:flex md:min-h-0 md:z-20"
-  [ngClass]="showSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
->
-  <header class="flex flex-col gap-2 mb-3">
-    <button
-      type="button"
-      class="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-[rgba(148,163,184,0.18)] bg-[rgba(4,9,6,0.96)] text-xs font-medium px-3 py-2 text-[#e5f4ea] hover:bg-[#0b1510] hover:border-[rgba(56,207,119,0.7)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.35)] transition-all duration-200 ease-out"
-      (click)="newConversation()"
+    <!-- Sidebar de conversaciones (izquierda, responsive) -->
+    <aside
+      class="fixed inset-y-0 left-0 z-40 w-72 max-w-[78vw] flex flex-col
+             border-r border-[rgba(148,163,184,0.12)] bg-[#050c08]
+             px-3 py-3 text-sm text-[#e5e7eb]
+             transform transition-transform duration-200 ease-out
+             md:static md:inset-auto md:transform-none md:w-72 md:max-w-xs md:flex md:min-h-0 md:z-20"
+      [ngClass]="showSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
     >
-      <span class="flex items-center justify-center w-4 h-4 text-base leading-none">
-        +
-      </span>
-      Nueva conversación
-    </button>
-    <div
-      class="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[rgba(148,163,184,0.8)]"
-    >
-      Chats
-    </div>
-  </header>
-
-  <section class="flex-1 min-h-0 overflow-y-auto pr-1 space-y-1">
-    <ng-container *ngIf="pastConversations?.length; else noConversations">
-      <ul class="space-y-0.5">
-        <li
-          *ngFor="let conv of pastConversations"
-          (click)="selectConversation(conv)"
-          class="rounded-md px-2.5 py-1.5 cursor-pointer transition-colors duration-150 ease-out flex flex-col border border-transparent"
-          [ngClass]="
-            conv.id === sessionId
-              ? 'bg-[#050c08] border-l-2 border-l-[#1bcf16]'
-              : 'hover:bg-[#172018]/80'
-          "
+      <header class="flex flex-col gap-2 mb-3">
+        <button
+          type="button"
+          class="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-[rgba(148,163,184,0.18)] bg-[rgba(4,9,6,0.96)] text-xs font-medium px-3 py-2 text-[#e5f4ea] hover:bg-[#0b1510] hover:border-[rgba(56,207,119,0.7)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.35)] transition-all duration-200 ease-out"
+          (click)="newConversation()"
         >
-          <div class="font-medium truncate">
-            {{ conv.title || ('Chat #' + conv.id) }}
-          </div>
-          <div class="text-[0.75rem] text-[#94a3b8]">
-            Última actividad:
-            {{ conv.last_activity_at | date: 'short' }}
-          </div>
-        </li>
-      </ul>
-    </ng-container>
+          <span class="flex items-center justify-center w-4 h-4 text-base leading-none">
+            +
+          </span>
+          Nueva conversación
+        </button>
+        <div
+          class="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[rgba(148,163,184,0.8)]"
+        >
+          Chats
+        </div>
+      </header>
 
-    <ng-template #noConversations>
-      <div class="mt-4 text-[0.85rem] text-[rgba(148,163,184,0.9)]">
-        <p>No tienes conversaciones previas.</p>
-        <p>Empieza una nueva para verlas aquí.</p>
-      </div>
-    </ng-template>
-  </section>
-</aside>
+      <section
+        class="flex-1 min-h-0 overflow-y-auto pr-1 space-y-1"
+        (click)="menuOpenForId = null"
+      >
+        <ng-container *ngIf="pastConversations?.length; else noConversations">
+          <ul class="space-y-0.5">
+            <li
+              *ngFor="let conv of pastConversations"
+              (click)="selectConversation(conv)"
+              class="relative rounded-md px-2.5 py-1.5 cursor-pointer transition-colors duration-150 ease-out flex items-start justify-between gap-2 border border-transparent"
+              [ngClass]="
+                conv.id === sessionId
+                  ? 'bg-[#050c08] border-l-2 border-l-[#1bcf16]'
+                  : 'hover:bg-[#172018]/80'
+              "
+            >
+              <!-- Texto (título + meta) -->
+              <div class="flex-1 min-w-0 flex flex-col">
+                <div class="font-medium truncate">
+                  {{ conv.title || ('Chat #' + conv.id) }}
+                </div>
+                <div class="text-[0.75rem] text-[#94a3b8]">
+                  Última actividad:
+                  {{ conv.last_activity_at | date: 'short' }}
+                </div>
+              </div>
 
+                            <!-- Botón 3 puntitos -->
+              <button
+                type="button"
+                class="flex-shrink-0 inline-flex items-center justify-center
+                       w-7 h-7 rounded-full border border-transparent
+                       text-[#9ca3af]
+                       hover:text-[#e5e7eb]
+                       hover:bg-[#020617]/85
+                       hover:border-[rgba(148,163,184,0.45)]
+                       focus:outline-none focus:ring-2 focus:ring-[rgba(56,207,119,0.7)]
+                       focus:ring-offset-0
+                       transition-all duration-150 ease-out"
+                (click)="toggleConvMenu(conv, $event)"
+                aria-label="Más opciones de conversación"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                >
+                  <circle cx="5" cy="12" r="1.3" />
+                  <circle cx="12" cy="12" r="1.3" />
+                  <circle cx="19" cy="12" r="1.3" />
+                </svg>
+              </button>
+
+              <!-- Menú desplegable -->
+              <div
+                *ngIf="menuOpenForId === conv.id"
+                class="absolute right-2 top-8 z-50 w-44 rounded-2xl
+                       border border-[rgba(15,23,42,0.95)]
+                       bg-[#020617]/98
+                       shadow-[0_18px_45px_rgba(0,0,0,0.9)]
+                       backdrop-blur-xl
+                       py-1.5 text-xs text-[#e5e7eb]"
+                (click)="$event.stopPropagation()"
+              >
+                <!-- Header del menú -->
+                <div
+                  class="px-3 pb-1 pt-1.5 text-[0.65rem] font-semibold
+                         uppercase tracking-[0.18em]
+                         text-[#6b7280]"
+                >
+                
+                </div>
+
+                <div class="h-px bg-[rgba(31,41,55,0.9)] mx-2 mb-1"></div>
+
+                <!-- Acción: eliminar -->
+                <button
+                  type="button"
+                  class="w-full text-left px-3 py-1.5
+                         hover:bg-[#111827]
+                         flex items-center gap-2
+                         text-[0.74rem] text-[#ff4848]"
+                  (click)="deleteConversation(conv, $event)"
+                >
+                  <span
+                    class="inline-flex items-center justify-center
+                           h-4 w-4 rounded-full
+                           bg-[#7f1d1d] text-[0.6rem]"
+                  >
+                    ✕
+                  </span>
+                  <span>Delete</span>
+                </button>
+              </div>
+
+            </li>
+          </ul>
+        </ng-container>
+
+        <ng-template #noConversations>
+          <div class="mt-4 text-[0.85rem] text-[rgba(148,163,184,0.9)]">
+            <p>No tienes conversaciones previas.</p>
+            <p>Empieza una nueva para verlas aquí.</p>
+          </div>
+        </ng-template>
+      </section>
+    </aside>
 
     <!-- Área principal del chat -->
     <main

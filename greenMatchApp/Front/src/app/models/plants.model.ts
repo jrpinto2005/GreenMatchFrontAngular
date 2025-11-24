@@ -9,6 +9,7 @@ export interface Plant {
   humidity?: string | null;
   temperature?: string | null;
   notes?: string | null;
+  image_gcs_uri?: string | null;
   status: 'active' | 'archived';
   source: 'manual' | 'chat' | 'import';
   created_at: string;          

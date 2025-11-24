@@ -53,11 +53,14 @@ export class ChatComponent implements OnInit, AfterViewInit {
   // Estado del nav lateral derecho (igual que isCollapsed en el preview React)
   rightNavCollapsed = true;
 
+  // 🔥 NUEVO: id del chat cuyo menú está abierto
+  menuOpenForId: number | null = null;
+
   constructor(
     private chatService: ChatService,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     // Si viene un prompt desde Mis Plantas, autoenvía
@@ -281,6 +284,39 @@ export class ChatComponent implements OnInit, AfterViewInit {
     this.sessionId = null;
     this.messages = [];
     this.showSidebar = false;
+  }
+
+  // ------------------
+  //   Menú de 3 puntitos en cada conversación
+  // ------------------
+  toggleConvMenu(conv: Conversation, event: MouseEvent) {
+    event.stopPropagation();
+    this.menuOpenForId = this.menuOpenForId === conv.id ? null : conv.id;
+  }
+
+  deleteConversation(conv: Conversation, event?: MouseEvent) {
+    if (event) event.stopPropagation();
+
+    this.chatService.deleteConversation(conv.id).subscribe({
+      next: () => {
+        // quitar de la lista
+        this.pastConversations = this.pastConversations.filter(
+          (c) => c.id !== conv.id,
+        );
+
+        // si estabas viendo esa conversación, limpiar chat
+        if (this.sessionId === conv.id) {
+          this.sessionId = null;
+          this.messages = [];
+        }
+
+        // cerrar menú
+        this.menuOpenForId = null;
+      },
+      error: (err) => {
+        console.error('Error eliminando conversación', err);
+      },
+    });
   }
 
   // ------------------
