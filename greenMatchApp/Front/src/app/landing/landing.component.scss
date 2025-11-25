@@ -160,8 +160,8 @@ box-shadow: 0 18px 30px rgba(132, 204, 22, 0.32);
 }
 
 .landing__icon {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-radius: 14px;
   background: rgba(248, 250, 252, 0.08);
   color: #f8fafc;
@@ -169,6 +169,8 @@ box-shadow: 0 18px 30px rgba(132, 204, 22, 0.32);
   align-items: center;
   justify-content: center;
   font-weight: 600;
+  font-size:1.2rem;
+  flex-shrink:0;
 }
 
 .landing__highlight-title {

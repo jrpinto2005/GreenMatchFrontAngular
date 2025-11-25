@@ -213,7 +213,6 @@ export class LandingComponent {
 
   readonly comparisonFeatures: ComparisonFeature[] = [
     { feature: 'Recomendación personalizada con IA', greenMatch: true, others: false },
-    { feature: 'Compra directa en viveros locales', greenMatch: true, others: false },
     { feature: 'Recordatorios inteligentes de cuidado', greenMatch: true, others: true },
     { feature: 'Wishlist para plantas futuras', greenMatch: true, others: false },
     { feature: 'Adaptado a tu clima local específico', greenMatch: true, others: false },
