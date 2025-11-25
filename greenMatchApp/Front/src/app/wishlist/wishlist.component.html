@@ -1,87 +1,104 @@
-<app-barra-superior></app-barra-superior>
-<div class="top-gap"></div>
-<main class="wishlist-page">
-  <div class="container mt-3">
-    <div class="header-row">
-      <h1 style="color:#151e08">Mi Wishlist</h1>
-      <div class="button-container">
-        <button 
-          class="add-btn" 
-          [class.rotated]="formOpen"
-          (click)="toggleForm()">+</button>
+<div class="flex flex-col min-h-screen bg-[#10150f] text-[#e5e7eb]">
+  <app-barra-superior></app-barra-superior>
 
-        <!-- Formulario para agregar -->
-        <div class="add-form-popup" *ngIf="formOpen">
-          <h3>Agregar planta a wishlist</h3>
-          <form (ngSubmit)="addToWishlist()">
-            <div class="form-field">
-              <label for="plant-name">Nombre de la planta</label>
-              <input 
-                id="plant-name"
-                type="text" 
-                [(ngModel)]="newPlant.name" 
-                name="name"
-                placeholder="Ej. Monstera Deliciosa"
-                required>
-            </div>
-            
-            <div class="form-field">
-              <label for="plant-reason">¿Por qué la quieres?</label>
-              <textarea 
-                id="plant-reason"
-                [(ngModel)]="newPlant.reason" 
-                name="reason"
-                rows="3"
-                placeholder="Ej. Me encanta su follaje grande y tropical"></textarea>
-            </div>
-            
-            <div class="form-field">
-              <label for="plant-priority">Prioridad</label>
-              <select id="plant-priority" [(ngModel)]="newPlant.priority" name="priority">
-                <option value="alta">Alta</option>
-                <option value="media">Media</option>
-                <option value="baja">Baja</option>
-              </select>
-            </div>
-            
-            <div class="form-actions">
-              <button type="button" class="btn-cancel" (click)="toggleForm()">Cancelar</button>
-              <button type="submit" class="btn-submit">Agregar</button>
-            </div>
-          </form>
+  <main class="flex-1 flex items-center justify-center px-4 py-16">
+    <div class="w-full max-w-2xl text-center space-y-6">
+      <!-- Icono grande -->
+      <div class="flex justify-center mb-2">
+        <div class="relative">
+          <img
+            src="assets/heart-cream.png"
+            alt="Wishlist"
+            class="w-32 h-32 object-contain opacity-90"
+          />
+
+          <!-- Badge "Próximamente" centrado y más alto -->
+          <span
+            class="absolute left-1/2 -translate-x-1/2 -top-8
+                  inline-flex items-center rounded-full
+                  bg-gradient-to-r from-lime-400 to-emerald-400
+                  px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wider
+                  text-slate-900 shadow-[0_8px_20px_rgrgba(132,204,22,0.4)]"
+          >
+            Próximamente
+          </span>
         </div>
       </div>
-    </div>
 
-    <div *ngIf="!wishlistPlants || wishlistPlants.length === 0" class="empty-state">
-      <img src="assets/heart-verde.png" alt="Wishlist vacía" class="empty-image">
-      <p class="empty-text">Tu wishlist está vacía</p>
-      <p class="empty-hint">Agrega plantas que sueñas con tener 💚</p>
-    </div>
+      <!-- Título -->
+      <h1 class="text-[2rem] sm:text-[2.5rem] font-bold text-slate-50 tracking-tight">
+        Wishlist de plantas
+      </h1>
 
-    <div *ngIf="wishlistPlants && wishlistPlants.length" class="wishlist-grid">
-      <div class="wishlist-card" *ngFor="let plant of wishlistPlants">
-        <div class="card-header">
-          <div class="priority-badge" [class]="'priority-' + plant.priority">
-            {{ getPriorityLabel(plant.priority) }}
-          </div>
-          <button class="delete-btn" (click)="removePlant(plant)" title="Eliminar">×</button>
+      <!-- Descripción -->
+      <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl mx-auto">
+        Estamos trabajando en esta función para que puedas guardar las plantas
+        que sueñas con tener. Podrás crear tu lista de deseos, establecer prioridades
+        y recibir notificaciones cuando estén disponibles en viveros cercanos.
+      </p>
+
+      <!-- Features preview -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 max-w-3xl mx-auto">
+        <div
+          class="rounded-2xl border border-white/10 bg-slate-950/50 p-4
+                 backdrop-blur-xl transition-all duration-200
+                 hover:border-lime-400/30 hover:bg-slate-900/50"
+        >
+          <div class="text-3xl mb-2">🌱</div>
+          <h3 class="text-sm font-semibold text-slate-200 mb-1">
+            Guarda tus favoritas
+          </h3>
+          <p class="text-xs text-slate-400">
+            Crea tu lista de plantas soñadas
+          </p>
         </div>
-        
-        <h2>{{ plant.name }}</h2>
-        
-        <p class="reason" *ngIf="plant.reason">
-          <strong>Por qué la quiero:</strong> {{ plant.reason }}
-        </p>
-        
-        <p class="date-added">Agregada: {{ plant.dateAdded | date: 'dd/MM/yyyy' }}</p>
-        
-        <button class="btn-got-it" (click)="markAsObtained(plant)">
-          ✓ Ya la conseguí
-        </button>
+
+        <div
+          class="rounded-2xl border border-white/10 bg-slate-950/50 p-4
+                 backdrop-blur-xl transition-all duration-200
+                 hover:border-lime-400/30 hover:bg-slate-900/50"
+        >
+          <div class="text-3xl mb-2">🔔</div>
+          <h3 class="text-sm font-semibold text-slate-200 mb-1">
+            Notificaciones
+          </h3>
+          <p class="text-xs text-slate-400">
+            Te avisamos cuando las encuentres
+          </p>
+        </div>
+
+        <div
+          class="rounded-2xl border border-white/10 bg-slate-950/50 p-4
+                 backdrop-blur-xl transition-all duration-200
+                 hover:border-lime-400/30 hover:bg-slate-900/50"
+        >
+          <div class="text-3xl mb-2">⭐</div>
+          <h3 class="text-sm font-semibold text-slate-200 mb-1">
+            Prioridades
+          </h3>
+          <p class="text-xs text-slate-400">
+            Organiza por importancia
+          </p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="pt-4 flex justify-center">
+        <a
+          routerLink="/chat"
+          class="inline-flex items-center gap-2 rounded-full
+                bg-lime-400 px-6 py-3 text-sm font-semibold
+                uppercase tracking-wider text-slate-900
+                shadow-[0_12px_28px_rgba(132,204,22,0.35)]
+                transition-all duration-200
+                hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(132,204,22,0.45)]"
+        >
+          <span>Mientras tanto, usa el chat</span>
+          <span class="text-base">→</span>
+        </a>
       </div>
     </div>
-  </div>
-</main>
-<div class="bottom-gap"></div>
-<app-barra-inferior></app-barra-inferior>
+  </main>
+
+  <app-barra-inferior></app-barra-inferior>
+</div>
