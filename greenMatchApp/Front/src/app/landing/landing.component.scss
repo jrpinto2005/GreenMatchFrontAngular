@@ -1,9 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: radial-gradient(circle at top, rgba(125, 153, 11, 0.18), transparent 35%),
-    radial-gradient(circle at 20% 20%, rgba(80, 0, 41, 0.18), transparent 45%),
-    #0f1115;
+  background: radial-gradient(circle at top, #111827 0, #1b2a0f 32%, #061316 65%, #020617 100%);background: radial-gradient(circle at top, #111827 0, #1b2a0f 32%, #061316 65%, #020617 100%);
   color: #f8fafc;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -67,7 +65,7 @@
   text-transform: uppercase;
   letter-spacing: 0.3em;
   font-size: 0.75rem;
-  color: #cfcf8a;
+  color: #d9f99d;
   margin: 0;
 }
 
@@ -88,9 +86,9 @@
 }
 
 .landing__cta {
-  background: #36b364;
-  color: #06140b;
-  box-shadow: 0 18px 30px rgba(54, 179, 100, 0.32);
+  background: #84cc16; // lime-400
+color: #0f172a; // slate-900
+box-shadow: 0 18px 30px rgba(132, 204, 22, 0.32);
 }
 
 .landing__cta:hover {
@@ -99,7 +97,7 @@
 }
 
 .landing__cta--primary {
-  background: linear-gradient(135deg, #4caf50, #99c93c);
+  background: linear-gradient(135deg, #84cc16, #bef264);
 }
 
 .landing__cta--secondary {
@@ -127,8 +125,8 @@
 }
 
 .landing__card {
-  background: rgba(8, 10, 14, 0.65);
-  border: 1px solid rgba(153, 146, 11, 0.2);
+  background: rgba(2, 6, 23, 0.65);
+  border: 1px solid rgba(132, 204, 22, 0.2);
   border-radius: 24px;
   padding: clamp(1.5rem, 4vw, 2.5rem);
   backdrop-filter: blur(18px);
@@ -197,7 +195,7 @@
 }
 
 .landing__footer a {
-  color: #36b364;
+  color: #84cc16;
   text-decoration: none;
 }
 
@@ -245,7 +243,7 @@
 }
 
 .landing__problem-card {
-  background: rgba(8, 10, 14, 0.65);
+  background: rgba(2, 6, 23, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: clamp(1.5rem, 3vw, 2rem);
@@ -255,7 +253,7 @@
 
   &:hover {
     transform: translateY(-4px);
-    border-color: rgba(153, 146, 11, 0.4);
+    border-color: rgba(132, 204, 22, 0.4);
   }
 
   h3 {
@@ -277,7 +275,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4caf50, #99c93c);
+  background: linear-gradient(135deg, #84cc16, #bef264);
   color: #06140b;
   font-size: 1.25rem;
   font-weight: 700;
@@ -304,7 +302,7 @@
 }
 
 .landing__persona-card {
-  background: rgba(8, 10, 14, 0.55);
+  background: rgba(2, 6, 23, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   padding: 1.75rem 1.5rem;
@@ -313,13 +311,13 @@
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(153, 146, 11, 0.25);
+    box-shadow: 0 12px 32px rgba(132, 204, 22, 0.25);
   }
 
   h3 {
     margin: 0.75rem 0 0.5rem;
     font-size: 1.15rem;
-    color: #cfcf8a;
+    color: #d9f99d;
   }
 
   p {
@@ -339,8 +337,8 @@
   width: min(1200px, 100%);
   margin: clamp(3rem, 8vw, 5rem) auto 0;
   padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 6vw, 4rem);
-  background: rgba(8, 10, 14, 0.65);
-  border: 1px solid rgba(153, 146, 11, 0.2);
+  background: rgba(2, 6, 23, 0.65);
+  border: 1px solid rgba(132, 204, 22, 0.2);
   border-radius: 28px;
   backdrop-filter: blur(18px);
 }
@@ -373,7 +371,7 @@
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 16px;
-  border-left: 3px solid #99c93c;
+  border-left: 3px solid #bef264;
   transition: background 0.2s ease, transform 0.2s ease;
 
   &:hover {
@@ -384,7 +382,7 @@
   h3 {
     margin: 0 0 0.5rem;
     font-size: 1.2rem;
-    color: #cfcf8a;
+    color: #d9f99d;
   }
 
   p {
@@ -401,7 +399,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4caf50, #99c93c);
+  background: linear-gradient(135deg, #84cc16, #bef264);
   color: #06140b;
   font-size: 1.5rem;
   font-weight: 700;
@@ -438,7 +436,7 @@
 }
 
 .landing__advantage-card {
-  background: rgba(8, 10, 14, 0.65);
+  background: rgba(2, 6, 23, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   padding: 2rem 1.75rem;
@@ -447,13 +445,13 @@
 
   &:hover {
     transform: translateY(-4px);
-    border-color: rgba(153, 146, 11, 0.4);
+    border-color: rgba(132, 204, 22, 0.4);
   }
 
   h3 {
     margin: 1rem 0 0.75rem;
     font-size: 1.2rem;
-    color: #cfcf8a;
+    color: #d9f99d;
   }
 
   p {
@@ -489,7 +487,7 @@
 }
 
 .landing__testimonial-card {
-  background: rgba(8, 10, 14, 0.6);
+  background: rgba(2, 6, 23, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   padding: 1.75rem 1.5rem;
@@ -505,7 +503,7 @@
   &--highlight {
     grid-column: 1 / -1;
     background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(153, 201, 60, 0.15));
-    border-color: rgba(153, 146, 11, 0.3);
+    border-color: rgba(132, 204, 22, 0.3);
     text-align: center;
   }
 }
@@ -519,7 +517,7 @@
 .landing__rating-number {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #99c93c;
+  color: #bef264;
   line-height: 1;
 }
 
@@ -532,7 +530,7 @@
 
 .landing__testimonial-quote {
   font-size: 1.25rem !important;
-  color: #cfcf8a !important;
+  color: #d9f99d !important;
   font-weight: 500;
 }
 
@@ -557,20 +555,20 @@
 }
 
 .landing__faq-item {
-  background: rgba(8, 10, 14, 0.55);
+  background: rgba(2, 6, 23, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 1.5rem 1.75rem;
   transition: border-color 0.2s ease;
 
   &:hover {
-    border-color: rgba(153, 146, 11, 0.3);
+    border-color: rgba(132, 204, 22, 0.3);
   }
 
   h3 {
     margin: 0 0 0.75rem;
     font-size: 1.1rem;
-    color: #cfcf8a;
+    color: #d9f99d;
   }
 
   p {
@@ -586,7 +584,7 @@
   margin: clamp(3rem, 8vw, 5rem) auto 0;
   padding: clamp(3rem, 8vw, 5rem) clamp(1rem, 6vw, 4rem);
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(153, 201, 60, 0.15));
-  border: 1px solid rgba(153, 146, 11, 0.3);
+  border: 1px solid rgba(132, 204, 22, 0.3);
   border-radius: 32px;
   text-align: center;
   backdrop-filter: blur(18px);
@@ -642,7 +640,7 @@
 }
 
 .landing__trust-badge {
-  background: rgba(8, 10, 14, 0.45);
+  background: rgba(2, 6, 23, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 1rem 1.25rem;
@@ -653,14 +651,14 @@
   transition: border-color 0.2s ease;
 
   &:hover {
-    border-color: rgba(153, 146, 11, 0.3);
+    border-color: rgba(132, 204, 22, 0.3);
   }
 }
 
 .landing__trust-badge-text {
   font-weight: 600;
   font-size: 1rem;
-  color: #cfcf8a;
+  color: #d9f99d;
 }
 
 .landing__trust-badge-subtitle {
@@ -674,7 +672,7 @@
   margin: clamp(3rem, 8vw, 5rem) auto 0;
   padding: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 6vw, 4rem);
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.18), rgba(153, 201, 60, 0.18));
-  border: 2px solid rgba(153, 146, 11, 0.35);
+  border: 2px solid rgba(132, 204, 22, 0.35);
   border-radius: 28px;
   text-align: center;
 }
@@ -713,7 +711,7 @@
 }
 
 .landing__comparison-table {
-  background: rgba(8, 10, 14, 0.55);
+  background: rgba(2, 6, 23, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   overflow: hidden;
@@ -731,7 +729,7 @@
 
 .landing__comparison-brand {
   text-align: center;
-  color: #99c93c;
+  color: #bef264;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -780,7 +778,7 @@
   color: rgba(248, 250, 252, 0.3);
 
   &--active {
-    color: #99c93c;
+    color: #bef264;
     font-weight: 700;
   }
 }
@@ -812,7 +810,7 @@
   gap: 1.5rem;
   align-items: flex-start;
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(153, 201, 60, 0.15));
-  border: 1px solid rgba(153, 146, 11, 0.3);
+  border: 1px solid rgba(132, 204, 22, 0.3);
   border-radius: 16px;
   padding: 1.75rem 2rem;
   margin-bottom: 3rem;
@@ -830,7 +828,7 @@
   strong {
     display: block;
     font-size: 1.15rem;
-    color: #cfcf8a;
+    color: #d9f99d;
     margin-bottom: 0.75rem;
   }
 
@@ -849,7 +847,7 @@
 }
 
 .landing__testimonial-card-detailed {
-  background: rgba(8, 10, 14, 0.6);
+  background: rgba(2, 6, 23, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   padding: 1.75rem;
@@ -858,7 +856,7 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(153, 146, 11, 0.25);
+    box-shadow: 0 12px 32px rgba(132, 204, 22, 0.25);
   }
 }
 
@@ -879,7 +877,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #4caf50, #99c93c);
+  background: linear-gradient(135deg, #84cc16, #bef264);
   color: #06140b;
   border-radius: 50%;
   text-transform: uppercase;
@@ -892,7 +890,7 @@
   gap: 0.35rem;
 
   strong {
-    color: #cfcf8a;
+    color: #d9f99d;
     font-size: 1rem;
   }
 }
@@ -900,7 +898,7 @@
 .landing__testimonial-rating-badge {
   display: inline-block;
   background: rgba(153, 201, 60, 0.2);
-  color: #99c93c;
+  color: #bef264;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   font-size: 0.8rem;
@@ -930,7 +928,7 @@
     line-height: 1.5;
 
     strong {
-      color: #cfcf8a;
+      color: #d9f99d;
       font-weight: 600;
     }
   }
@@ -939,20 +937,20 @@
 .landing__testimonials-toggle {
   display: inline-flex;
   margin: 2rem auto 0;
-  border: 2px solid rgba(153, 146, 11, 0.3);
+  border: 2px solid rgba(132, 204, 22, 0.3);
   border-radius: 999px;
   padding: 0.85rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  background: rgba(8, 10, 14, 0.55);
-  color: #cfcf8a;
+  background: rgba(2, 6, 23, 0.55);
+  color: #d9f99d;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
-    border-color: rgba(153, 146, 11, 0.5);
-    background: rgba(8, 10, 14, 0.75);
+    border-color: rgba(132, 204, 22, 0.5);
+    background: rgba(2, 6, 23, 0.75);
   }
 }
 
@@ -962,7 +960,7 @@
   margin: clamp(3rem, 8vw, 5rem) auto 0;
   padding: clamp(2.5rem, 6vw, 3.5rem) clamp(1rem, 6vw, 4rem);
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(153, 201, 60, 0.12));
-  border: 2px solid rgba(153, 146, 11, 0.3);
+  border: 2px solid rgba(132, 204, 22, 0.3);
   border-radius: 24px;
   text-align: center;
 }
@@ -1004,7 +1002,7 @@
   color: rgba(248, 250, 252, 0.85);
 
   span:first-child {
-    color: #99c93c;
+    color: #bef264;
     font-weight: 700;
     font-size: 1.25rem;
   }

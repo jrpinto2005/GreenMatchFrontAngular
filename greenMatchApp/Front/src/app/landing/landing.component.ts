@@ -58,18 +58,23 @@ export class LandingComponent {
   readonly highlights: LandingHighlight[] = [
     {
       title: 'Cuida tus plantas con IA',
-      description: 'Sube una foto o una descripción, y se te creará un plan personalizado para tu planta.',
+      description: 'Sube una foto o descríbela y nuestro chat te dirá qué planta es, qué necesita y cómo debes cuidarla.',
       icon: '01'
     },
     {
-      title: 'Wishlist de plantas',
-      description: 'Guarda las plantas que quieres comprar en el futuro y recibe notificaciones.',
+      title: 'Plan personalizado siempre disponible',
+      description: 'Recibe un plan de riego, luz y fertilización hecho para tu planta. Consúltalo cuando quieras desde tu calendario o perfil.',
       icon: '02'
     },
     {
-      title: 'Agenda visual',
-      description: 'Un calendario claro con recordatorios inteligentes para riegos, fertilizaciones y podas.',
+      title: 'Pregunta cualquier duda en el chat verde',
+      description: 'Nuestra IA generativa responde sobre riegos, podas, problemas de hojas, iluminación y más con base en tus fotos y espacio.',
       icon: '03'
+    },
+    {
+      title: 'Wishlist de plantas (próximamente)',
+      description: 'Guarda las plantas que quieras tener en el futuro y recibe notificaciones.',
+      icon: '04'
     }
   ];
 
@@ -109,23 +114,23 @@ export class LandingComponent {
   readonly howItWorks: HowItWorksStep[] = [
     {
       number: '01',
-      title: 'Chatea y describe',
-      description: 'Envía fotos y describe tu espacio, clima y estilo de vida'
+      title: 'Chatea y envía tus fotos',
+      description: 'Describe tu planta, tu espacio y tu clima, o simplemente sube una foto: nuestro chat entiende lo que necesita.'
     },
     {
       number: '02',
       title: 'IA analiza',
-      description: 'Nuestra IA generativa recomienda plantas ideales para larga vida'
+      description: 'Nuestra IA generativa analiza luz, clima, tamaño y estado general para darte recomendaciones útiles para que viva más tiempo.'
     },
     {
       number: '03',
       title: 'Guía personalizada',
-      description: 'Recibe instrucciones de riego, luz y fertilización adaptadas a ti'
+      description: 'Recibe un plan claro de riego, luz y fertilización pensando en tu día a día. Accede a él cuando quieras.'
     },
     {
       number: '04',
-      title: 'Compra fácil',
-      description: 'Links directos a viveros locales para conseguir tus plantas'
+      title: 'Compra fácil (Coming Soon)',
+      description: 'Te mostraremos viveros y plantas compatibles cuando la función esté disponible.'
     }
   ];
 
