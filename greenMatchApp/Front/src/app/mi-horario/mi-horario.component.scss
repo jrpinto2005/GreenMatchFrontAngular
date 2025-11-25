@@ -1,545 +1,205 @@
 .mi-horario-page {
-  position: relative;
   min-height: calc(100vh - 112px);
-  padding: 1.5rem 1rem 6rem;
-  background: linear-gradient(135deg, #151e08 0%, #52510b 55%, #99920b 100%);
+  background: #10150f;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-}
-
-.mi-horario-page--loading {
   align-items: center;
+  padding: 40px 20px;
 }
 
-.mi-horario-card {
-  width: min(760px, 100%);
+.coming-soon-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 600px;
+}
+
+.coming-soon-card {
   background-color: #ffffee;
-  border-radius: 20px;
+  border-radius: 24px;
+  padding: 60px 40px;
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.25);
-  padding: 1.75rem 1.5rem 2.25rem;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
-  z-index: 1100;
+  gap: 24px;
 }
 
-.mi-horario-card--loading {
+.coming-soon-icon {
+  font-size: 80px;
+  line-height: 1;
+  animation: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+}
+
+.coming-soon-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #84cc16, #bef264);
+  color: #0f172a;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  width: fit-content;
+  margin: 0 auto;
+  box-shadow: 0 6px 18px rgba(132, 204, 22, 0.35);
+}
+
+.coming-soon-title {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #151e08;
+  letter-spacing: -0.02em;
+}
+
+.divider {
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #99920b, transparent);
+  margin: 8px auto;
+}
+
+.coming-soon-subtitle {
+  margin: 0;
+  font-size: 16px;
+  color: #52510b;
+  line-height: 1.6;
+}
+
+.coming-soon-description {
+  margin: 0;
+  font-size: 14px;
+  color: #99920b;
+  line-height: 1.6;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.feature-item {
+  background-color: rgba(21, 30, 8, 0.05);
+  border: 1px solid rgba(21, 30, 8, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(21, 30, 8, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(21, 30, 8, 0.2);
+  }
+}
+
+.feature-item-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.feature-item-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #151e08;
+  text-align: center;
+}
+
+.cta-button {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 240px;
-}
-
-.mi-horario-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  color: #151e08;
-}
-
-.mi-horario-title {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
-}
-
-.mi-horario-subtitle {
-  margin: 0.25rem 0 0;
-  font-size: 0.95rem;
-  color: #52510b;
-}
-
-.mi-horario-action {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.6rem 1.4rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background-color: #500029;
+  gap: 8px;
+  background: #500029;
   color: #ffffee;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.mi-horario-action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(80, 0, 41, 0.32);
-}
-
-.mi-horario-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.mi-horario-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.mi-horario-group__title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #151e08;
-  text-transform: capitalize;
-}
-
-.mi-horario-group__title--today {
-  color: #500029;
-}
-
-.mi-horario-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.mi-horario-list__item {
-  position: relative;
-  display: grid;
-  grid-template-columns: 80px 1fr auto;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
-  background-color: rgba(21, 30, 8, 0.05);
-  border-radius: 16px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.mi-horario-list__item:hover {
-  transform: translateY(-1px);
-  background-color: rgba(21, 30, 8, 0.09);
-}
-
-.mi-horario-list__item--completed {
-  opacity: 0.8;
-  background-color: rgba(80, 0, 41, 0.05);
-}
-
-.mi-horario-list__item--overdue {
-  border-color: rgba(255, 85, 85, 0.3);
-}
-
-.mi-horario-list__time {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #52510b;
-  display: flex;
-  align-items: flex-start;
-  margin-top: 0.2rem;
-}
-
-.mi-horario-list__content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.mi-horario-list__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.mi-horario-list__title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #151e08;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mi-horario-list__status {
-  padding: 0.15rem 0.65rem;
+  border: none;
   border-radius: 999px;
-  font-size: 0.75rem;
+  padding: 12px 32px;
+  font-size: 14px;
   font-weight: 600;
-  background-color: rgba(21, 30, 8, 0.08);
-  color: #151e08;
-  white-space: nowrap;
-}
-
-.mi-horario-list__status--completed {
-  background-color: rgba(80, 0, 41, 0.12);
-  color: #500029;
-}
-
-.mi-horario-list__status--overdue {
-  background-color: rgba(255, 85, 85, 0.15);
-  color: #aa2c2c;
-}
-
-.mi-horario-list__meta {
-  font-size: 0.85rem;
-  color: #52510b;
-}
-
-.mi-horario-list__notes {
-  font-size: 0.8rem;
-  color: #500029;
-  line-height: 1.4;
-}
-
-.mi-horario-list__action {
-  align-self: flex-start;
-  border: 0;
-  border-radius: 999px;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background-color: rgba(80, 0, 41, 0.1);
-  color: #500029;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.mi-horario-list__item--completed .mi-horario-list__action {
-  background-color: rgba(21, 30, 8, 0.1);
-  color: #151e08;
-}
-
-.mi-horario-list__action:hover {
-  transform: translateY(-1px);
-  background-color: rgba(80, 0, 41, 0.2);
-}
-
-.mi-horario-loading {
-  font-size: 1rem;
-  color: #52510b;
-  text-align: center;
-}
-
-.mi-horario-empty {
-  width: min(320px, 100%);
-  margin: 2rem auto 0;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  color: #151e08;
-}
-
-.mi-horario-empty__image {
-  width: 160px;
-  height: auto;
-  margin: 0 auto;
-}
-
-.mi-horario-empty__title {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.mi-horario-empty__text {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #52510b;
-}
-
-.mi-horario-empty__action {
-  margin: 0 auto;
-  border: 1px solid #500029;
-  border-radius: 999px;
-  padding: 0.6rem 1.6rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background-color: transparent;
-  color: #500029;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.mi-horario-empty__action:hover {
-  background-color: #500029;
-  color: #ffffee;
-}
-
-.mi-horario-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 13, 9, 0.45);
-  z-index: 1300;
-}
-
-.mi-horario-panel {
-  position: fixed;
-  top: 72px;
-  right: clamp(1rem, 8vw, 3rem);
-  width: min(380px, calc(100% - 2rem));
-  max-height: calc(100vh - 120px);
-  overflow: hidden;
-  background: #fffff6;
-  border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
-  padding: 1.25rem 1.5rem 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  z-index: 1400;
-}
-
-.mi-horario-panel__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1.25rem;
-}
-
-.mi-horario-panel__header h2 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #151e08;
-}
-
-.mi-horario-panel__subtitle {
-  margin: 0.3rem 0 0;
-  font-size: 0.85rem;
-  color: #52510b;
-}
-
-.mi-horario-panel__close {
-  border: 0;
-  background: transparent;
-  color: #500029;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.25rem;
-}
-
-.mi-horario-panel__details {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.mi-horario-panel__detail {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.mi-horario-panel__detail dt {
-  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #52510b;
-}
-
-.mi-horario-panel__detail dd {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #151e08;
-}
-
-.mi-horario-panel__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.mi-horario-panel__button {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.55rem 1.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  background-color: rgba(80, 0, 41, 0.12);
-  color: #500029;
+  letter-spacing: 0.12em;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.mi-horario-panel__button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(80, 0, 41, 0.18);
-}
-
-.mi-horario-panel__button--danger {
-  background-color: rgba(170, 44, 44, 0.15);
-  color: #aa2c2c;
-}
-
-.mi-horario-panel--form {
-  gap: 1.6rem;
-}
-
-.mi-horario-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.mi-horario-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.mi-horario-form__field label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #52510b;
-}
-
-.mi-horario-form__field input,
-.mi-horario-form__field select,
-.mi-horario-form__field textarea {
-  border: 1px solid rgba(21, 30, 8, 0.2);
-  border-radius: 10px;
-  padding: 0.55rem 0.75rem;
-  font-size: 0.95rem;
-  font-family: inherit;
-  color: #151e08;
-  background-color: #ffffff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.mi-horario-form__field input:focus,
-.mi-horario-form__field select:focus,
-.mi-horario-form__field textarea:focus {
-  outline: none;
-  border-color: rgba(80, 0, 41, 0.4);
-  box-shadow: 0 0 0 3px rgba(80, 0, 41, 0.12);
-}
-
-.mi-horario-form__row {
-  display: flex;
-  gap: 1rem;
-}
-
-.mi-horario-form__error {
-  font-size: 0.75rem;
-  color: #aa2c2c;
-}
-
-.mi-horario-form__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding-top: 0.5rem;
-}
-
-.mi-horario-form__button {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.6rem 1.4rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  background-color: #500029;
-  color: #ffffee;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.mi-horario-form__button:hover {
-  transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(80, 0, 41, 0.32);
-}
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin: 0 auto;
 
-.mi-horario-form__button--ghost {
-  background-color: transparent;
-  color: #500029;
-  border: 1px solid rgba(80, 0, 41, 0.3);
-}
-
-.mi-horario-form__button--ghost:hover {
-  box-shadow: none;
-  background-color: rgba(80, 0, 41, 0.08);
-}
-
-@media (max-width: 900px) {
-  .mi-horario-card {
-    padding: 1.5rem 1.2rem 2rem;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(80, 0, 41, 0.4);
   }
 
-  .mi-horario-list__item {
-    grid-template-columns: 68px 1fr auto;
-  }
-
-  .mi-horario-panel {
-    right: 1rem;
+  &:active {
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 720px) {
-  .mi-horario-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .mi-horario-action {
-    align-self: flex-end;
-  }
-
-  .mi-horario-form__row {
-    flex-direction: column;
-  }
+.coming-soon-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #99920b;
+  padding-top: 16px;
 }
 
+/* Responsive */
 @media (max-width: 640px) {
-  .mi-horario-panel,
-  .mi-horario-backdrop {
-    inset: 0;
+  .mi-horario-page {
+    padding: 24px 16px;
   }
 
-  .mi-horario-panel {
-    top: auto;
-    right: auto;
-    width: 100%;
-    max-height: calc(100vh - 80px);
-    border-radius: 16px 16px 0 0;
-    padding: 1.25rem 1.25rem 6rem;
+  .coming-soon-card {
+    padding: 40px 24px;
   }
 
-  .mi-horario-panel__actions {
-    flex-direction: column;
+  .coming-soon-title {
+    font-size: 24px;
   }
 
-  .mi-horario-panel__button,
-  .mi-horario-form__button {
-    width: 100%;
-    text-align: center;
+  .coming-soon-icon {
+    font-size: 60px;
   }
 
-  .mi-horario-form__actions {
-    flex-direction: column-reverse;
+  .coming-soon-subtitle {
+    font-size: 14px;
   }
 
-  h1 {
-    font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    font-weight: 400;
+  .coming-soon-description {
+    font-size: 13px;
   }
 
-  h2 {
-      font-family: "amifer",sans-serif;;
-      font-weight: 500;
-      color: #52510b;
-      font-size: 1.5rem;
-      line-height: 1.2rem;
-      margin-bottom: 0.2rem;
-      margin-top: 0.5rem;
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 12px;
   }
 
-  p {
-      color: #99920b;
-      font-size: 1rem;
-      font-family: "amifer",sans-serif;
-      font-weight: 200;
+  .feature-item {
+    padding: 12px;
+  }
+
+  .feature-item-icon {
+    font-size: 28px;
+  }
+
+  .feature-item-text {
+    font-size: 11px;
   }
 }
