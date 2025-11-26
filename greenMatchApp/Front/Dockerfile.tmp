@@ -1,0 +1,16 @@
+FROM node:18-alpine
+
+# Instalar serve globalmente
+RUN npm install -g serve@14
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos construidos
+COPY dist/front/browser ./
+
+# Exponer puerto 8080
+EXPOSE 8080
+
+# Comando para servir la aplicación
+CMD ["serve", "-s", ".", "-l", "8080"]

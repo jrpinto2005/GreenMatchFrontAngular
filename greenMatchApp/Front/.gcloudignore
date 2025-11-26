@@ -1,0 +1,15 @@
+node_modules/
+.git/
+.github/
+.vscode/
+.angular/
+*.md
+.DS_Store
+.editorconfig
+coverage/
+e2e/
+karma.conf.js
+protractor.conf.js
+*.spec.ts
+*.test.ts
+src/
