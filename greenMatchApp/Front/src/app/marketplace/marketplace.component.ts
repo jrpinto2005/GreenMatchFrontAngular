@@ -15,8 +15,16 @@ import { BarraInferiorComponent } from '../barra-inferior/barra-inferior.compone
 export class MarketplaceComponent implements OnInit {
     items: MarketplaceItem[] = [];
     filteredItems: MarketplaceItem[] = [];
-    selectedCategory: string = 'all';
+    selectedCategory: string = 'todos';
     isLoading = false;
+
+    // Mapeo de categorías en español a inglés para el filtrado
+    categoryMapping: { [key: string]: string } = {
+        'todos': 'all',
+        'planta': 'plant',
+        'maceta': 'pot',
+        'fertilizante': 'fertilizer'
+    };
 
     // Modal states
     showOrderModal = false;
@@ -60,10 +68,13 @@ export class MarketplaceComponent implements OnInit {
             this.selectedCategory = category;
         }
 
-        if (this.selectedCategory === 'all') {
+        // Mapear la categoría en español a inglés para el filtrado
+        const englishCategory = this.categoryMapping[this.selectedCategory] || this.selectedCategory;
+
+        if (englishCategory === 'all') {
             this.filteredItems = this.items;
         } else {
-            this.filteredItems = this.items.filter(item => item.category === this.selectedCategory);
+            this.filteredItems = this.items.filter(item => item.category === englishCategory);
         }
     }
 

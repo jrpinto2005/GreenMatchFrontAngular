@@ -3,9 +3,9 @@
     <div class="flex flex-col md:flex-row justify-between items-center py-8 gap-4">
         <div>
             <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">
-                Marketplace
+                Tienda
             </h1>
-            <p class="text-gray-400 mt-1">Find the best plants and accessories for your green space.</p>
+            <p class="text-gray-400 mt-1">Encuentra las mejores plantas y accesorios para tu espacio verde.</p>
         </div>
         <button (click)="openRequestModal()"
             class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-500 hover:to-emerald-600 text-white font-semibold rounded-full shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
@@ -13,13 +13,13 @@
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            Request Item
+            Solicitar Artículo
         </button>
     </div>
 
     <!-- Category Filters -->
     <div class="flex gap-4 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-        <button *ngFor="let cat of ['all', 'plant', 'pot', 'fertilizer']" (click)="filterItems(cat)"
+        <button *ngFor="let cat of ['todos', 'planta', 'maceta', 'fertilizante']" (click)="filterItems(cat)"
             [class.bg-green-600]="selectedCategory === cat" [class.text-white]="selectedCategory === cat"
             [class.bg-[#18231c]]="selectedCategory !== cat" [class.text-gray-400]="selectedCategory !== cat"
             class="px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200 capitalize whitespace-nowrap border border-transparent hover:border-green-500/30">
@@ -57,11 +57,11 @@
                 <p class="text-gray-400 text-sm mb-4 line-clamp-2 flex-1">{{ item.description }}</p>
 
                 <div class="flex items-center justify-between mt-auto pt-4 border-t border-[#232e27]">
-                    <span class="text-xs text-gray-500">{{ item.stock > 0 ? item.stock + ' in stock' : 'Out of stock'
+                    <span class="text-xs text-gray-500">{{ item.stock > 0 ? item.stock + ' en stock' : 'Agotado'
                         }}</span>
                     <button (click)="openOrderModal(item)" [disabled]="item.stock === 0"
                         class="px-4 py-2 bg-[#18231c] hover:bg-green-600 text-green-400 hover:text-white rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ item.stock > 0 ? 'Buy Now' : 'Sold Out' }}
+                        {{ item.stock > 0 ? 'Comprar' : 'Agotado' }}
                     </button>
                 </div>
             </div>
@@ -77,8 +77,8 @@
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
         </div>
-        <h3 class="text-xl font-medium text-white">No items found</h3>
-        <p class="text-gray-400 mt-2">Try changing the category or check back later.</p>
+        <h3 class="text-xl font-medium text-white">No se encontraron artículos</h3>
+        <p class="text-gray-400 mt-2">Intenta cambiar la categoría o vuelve más tarde.</p>
     </div>
 
     <!-- Order Modal -->
@@ -93,7 +93,7 @@
                 </svg>
             </button>
 
-            <h2 class="text-2xl font-bold text-white mb-6">Complete Order</h2>
+            <h2 class="text-2xl font-bold text-white mb-6">Completar Pedido</h2>
 
             <div *ngIf="selectedItem" class="flex gap-4 mb-6 bg-[#18231c] p-3 rounded-xl">
                 <img [src]="getImageUrl(selectedItem.image_url)" class="w-16 h-16 object-cover rounded-lg">
@@ -105,31 +105,31 @@
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Quantity</label>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Cantidad</label>
                     <input type="number" [(ngModel)]="orderQuantity" min="1" [max]="selectedItem?.stock || 1"
                         class="w-full bg-[#121a15] border border-[#232e27] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500 transition-colors">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Shipping Address</label>
-                    <textarea [(ngModel)]="shippingAddress" rows="3" placeholder="Enter your full address"
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Dirección de Envío</label>
+                    <textarea [(ngModel)]="shippingAddress" rows="3" placeholder="Ingresa tu dirección completa"
                         class="w-full bg-[#121a15] border border-[#232e27] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500 transition-colors"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Payment Method</label>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Método de Pago</label>
                     <div class="grid grid-cols-2 gap-3">
                         <button type="button" (click)="paymentMethod = 'cash'"
                             [class.border-green-500]="paymentMethod === 'cash'"
                             [ngClass]="{'bg-green-500/10': paymentMethod === 'cash'}"
                             class="border border-[#232e27] bg-[#121a15] rounded-lg p-3 text-center transition-all">
-                            <span class="block text-white font-medium">Cash</span>
+                            <span class="block text-white font-medium">Efectivo</span>
                         </button>
                         <button type="button" (click)="paymentMethod = 'transfer'"
                             [class.border-green-500]="paymentMethod === 'transfer'"
                             [ngClass]="{'bg-green-500/10': paymentMethod === 'transfer'}"
                             class="border border-[#232e27] bg-[#121a15] rounded-lg p-3 text-center transition-all">
-                            <span class="block text-white font-medium">Transfer</span>
+                            <span class="block text-white font-medium">Transferencia</span>
                         </button>
                     </div>
                 </div>
@@ -145,13 +145,13 @@
                         class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2">
                         <span *ngIf="orderStatus === 'submitting'"
                             class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-                        {{ orderStatus === 'submitting' ? 'Processing...' : 'Place Order' }}
+                        {{ orderStatus === 'submitting' ? 'Procesando...' : 'Realizar Pedido' }}
                     </button>
 
-                    <p *ngIf="orderStatus === 'success'" class="text-green-400 text-center mt-2 text-sm">Order placed
-                        successfully!</p>
-                    <p *ngIf="orderStatus === 'error'" class="text-red-400 text-center mt-2 text-sm">Failed to place
-                        order. Try again.</p>
+                    <p *ngIf="orderStatus === 'success'" class="text-green-400 text-center mt-2 text-sm">¡Pedido realizado
+                        con éxito!</p>
+                    <p *ngIf="orderStatus === 'error'" class="text-red-400 text-center mt-2 text-sm">Error al realizar el
+                        pedido. Intenta de nuevo.</p>
                 </div>
             </div>
         </div>
@@ -169,20 +169,20 @@
                 </svg>
             </button>
 
-            <h2 class="text-2xl font-bold text-white mb-2">Request Item</h2>
-            <p class="text-gray-400 text-sm mb-6">Can't find what you're looking for? Let us know!</p>
+            <h2 class="text-2xl font-bold text-white mb-2">Solicitar Artículo</h2>
+            <p class="text-gray-400 text-sm mb-6">¿No encuentras lo que buscas? ¡Déjanos saber!</p>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Item Name</label>
-                    <input type="text" [(ngModel)]="requestItemName" placeholder="e.g., Rare Blue Orchid"
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Nombre del Artículo</label>
+                    <input type="text" [(ngModel)]="requestItemName" placeholder="ej. Orquídea Azul Rara"
                         class="w-full bg-[#121a15] border border-[#232e27] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500 transition-colors">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Description</label>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Descripción</label>
                     <textarea [(ngModel)]="requestDescription" rows="4"
-                        placeholder="Describe what you are looking for..."
+                        placeholder="Describe lo que estás buscando..."
                         class="w-full bg-[#121a15] border border-[#232e27] rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500 transition-colors"></textarea>
                 </div>
 
@@ -191,13 +191,13 @@
                         class="w-full bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-500 hover:to-emerald-600 text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2">
                         <span *ngIf="requestStatus === 'submitting'"
                             class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-                        {{ requestStatus === 'submitting' ? 'Sending...' : 'Submit Request' }}
+                        {{ requestStatus === 'submitting' ? 'Enviando...' : 'Enviar Solicitud' }}
                     </button>
 
-                    <p *ngIf="requestStatus === 'success'" class="text-green-400 text-center mt-2 text-sm">Request sent
-                        successfully!</p>
-                    <p *ngIf="requestStatus === 'error'" class="text-red-400 text-center mt-2 text-sm">Failed to send
-                        request. Try again.</p>
+                    <p *ngIf="requestStatus === 'success'" class="text-green-400 text-center mt-2 text-sm">¡Solicitud enviada
+                        con éxito!</p>
+                    <p *ngIf="requestStatus === 'error'" class="text-red-400 text-center mt-2 text-sm">Error al enviar la
+                        solicitud. Intenta de nuevo.</p>
                 </div>
             </div>
         </div>
