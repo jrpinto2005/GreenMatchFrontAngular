@@ -63,17 +63,17 @@ export class LandingComponent {
     },
     {
       title: 'Plan personalizado siempre disponible',
-      description: 'Recibe un plan de riego, luz y fertilización hecho para tu planta. Consúltalo cuando quieras desde tu calendario o perfil.',
+      description: 'Recibe un plan de riego, luz y fertilización hecho para tu planta. Consúltalo cuando quieras desde tus plantas.',
       icon: '02'
     },
     {
       title: 'Pregunta cualquier duda en el chat verde',
-      description: 'Nuestra IA generativa responde sobre riegos, podas, problemas de hojas, iluminación y más con base en tus fotos y espacio.',
+      description: 'Nuestra IA generativa responde sobre riegos, podas, problemas de hojas, iluminación, plagas y más con base en tus necesidades.',
       icon: '03'
     },
     {
-      title: 'Wishlist de plantas (próximamente)',
-      description: 'Guarda las plantas que quieras tener en el futuro y recibe notificaciones.',
+      title: 'Nuestro marketplace',
+      description: 'Explora nuestra selección de plantas y accesorios pensados 100% para ti. Todo en un solo lugar.',
       icon: '04'
     }
   ];
@@ -130,7 +130,7 @@ export class LandingComponent {
     {
       number: '04',
       title: 'Compra fácil (Coming Soon)',
-      description: 'Te mostraremos viveros y plantas compatibles cuando la función esté disponible.'
+      description: 'Te mostramos las mejores plantas y accesorios para ti, y te conectamos con viveros locales para que compres sin complicaciones.'
     }
   ];
 
@@ -225,12 +225,12 @@ export class LandingComponent {
       answer: 'No. GreenMatch está diseñado especialmente para principiantes y personas que han fallado antes. Nuestra IA te guía paso a paso.'
     },
     {
-      question: '¿Funciona para cualquier clima?',
+      question: '¿Funciona para cualquier lugar?',
       answer: 'Sí. Nuestro sistema adapta las recomendaciones según tu ubicación y condiciones específicas. Funcionamos en toda Latinoamérica.'
     },
     {
       question: '¿Cómo me ayuda con la compra?',
-      answer: 'Te conectamos directamente con viveros locales verificados que tienen las plantas recomendadas para ti. Algunos ofrecen descuentos exclusivos.'
+      answer: 'Te conectamos directamente con viveros locales verificados que tienen las plantas recomendadas para ti. Y lo mejor es que guardamos todas las plantas que compres en tu perfil para acceder a su plan de cuidado y a toda la información que necesites.'
     },
     {
       question: '¿GreenMatch es gratis?',

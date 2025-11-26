@@ -212,12 +212,16 @@ export class MisPlantasComponent implements OnInit {
       return this.placeholderImage;
     }
 
-    if (uri.startsWith('http://') || uri.startsWith('https://')) {
+    if (uri.startsWith('http://')) {
+      return 'https://' + uri.substring('http://'.length);
+    }
+
+    if (uri.startsWith('https://')) {
       return uri;
     }
 
     if (uri.startsWith('gs://')) {
-      const withoutScheme = uri.slice(5); 
+      const withoutScheme = uri.slice(5);
       const slashIdx = withoutScheme.indexOf('/');
       if (slashIdx === -1) return this.placeholderImage;
 

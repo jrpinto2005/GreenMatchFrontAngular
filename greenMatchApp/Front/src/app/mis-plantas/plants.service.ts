@@ -12,11 +12,11 @@ export class PlantService {
 
   list(userId: number): Observable<Plant[]> {
     const params = new HttpParams().set('user_id', String(userId));
-    return this.http.get<Plant[]>(`${this.apiUrl}/plants`, { params });
+    return this.http.get<Plant[]>(`${this.apiUrl}/plants/`, { params });
   }
 
   create(payload: Partial<Plant> & { user_id: number; common_name: string }): Observable<Plant> {
-    return this.http.post<Plant>(`${this.apiUrl}/plants`, payload);
+    return this.http.post<Plant>(`${this.apiUrl}/plants/`, payload);
   }
 
   get(id: number): Observable<Plant> {
@@ -35,7 +35,6 @@ export class PlantService {
     return this.http.get<CarePlan | null>(`${this.apiUrl}/plants/${plantId}/care-plan`);
   }
 
-  // 🔸 NUEVO: subir / actualizar foto de planta
   uploadImage(plantId: number, file: File): Observable<Plant> {
     const form = new FormData();
     form.append('file', file);
