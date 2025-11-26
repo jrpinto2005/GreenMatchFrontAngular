@@ -33,6 +33,7 @@ export class PlantDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly svc = inject(PlantService);
+  readonly placeholderImage = 'assets/plant-placeholder.jpg';
 
   plant!: Plant;
   plan: CarePlan = null;
@@ -85,4 +86,33 @@ export class PlantDetailComponent implements OnInit {
       : `Generame por favor el plan de cuidado para ${this.plant.common_name}`;
     this.router.navigate(['/chat'], { queryParams: { prompt } });
   }
+
+    getPlantImage(p: Plant | null): string {
+    if (!p || !p.image_gcs_uri) {
+      return this.placeholderImage;
+    }
+
+    const uri = p.image_gcs_uri;
+
+    if (uri.startsWith('http://')) {
+      return 'https://' + uri.substring('http://'.length);
+    }
+
+    if (uri.startsWith('https://')) {
+      return uri;
+    }
+
+    if (uri.startsWith('gs://')) {
+      const withoutScheme = uri.slice(5);
+      const slashIdx = withoutScheme.indexOf('/');
+      if (slashIdx === -1) return this.placeholderImage;
+
+      const bucket = withoutScheme.slice(0, slashIdx);
+      const path = withoutScheme.slice(slashIdx + 1);
+      return `https://storage.googleapis.com/${bucket}/${path}`;
+    }
+
+    return this.placeholderImage;
+  }
 }
+
